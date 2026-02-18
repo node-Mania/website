@@ -14,6 +14,11 @@ import { PartnersSection } from './home/PartnersSection';
 import { TestimonialsSection } from './home/TestimonialsSection';
 import { FAQSection } from './home/FAQSection';
 import { NewsletterSection } from './home/NewsletterSection';
+import type { ProductGroup } from '@/lib/types/whmcs.types';
+
+interface HomeContentProps {
+    productGroups?: ProductGroup[];
+}
 
 const Reveal = ({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) => (
     <motion.div
@@ -26,7 +31,7 @@ const Reveal = ({ children, delay = 0 }: { children: React.ReactNode; delay?: nu
     </motion.div>
 );
 
-export default function HomeContent() {
+export default function HomeContent({ productGroups }: HomeContentProps) {
     return (
         <div className="w-full bg-white overflow-hidden">
             <Reveal>
@@ -36,7 +41,7 @@ export default function HomeContent() {
                 <TrustBar />
             </Reveal>
             <Reveal>
-                <PricingSection />
+                <PricingSection productGroups={productGroups} />
             </Reveal>
             <Reveal>
                 <ComparisonSection />
