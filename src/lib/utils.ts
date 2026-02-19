@@ -6,10 +6,9 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 
-export function convertStringIntoList(description: string): Array<any> {
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(description, "text/html");
-  return Array.from(doc.querySelectorAll("li")).map(
-    (li) => li.innerHTML
-  );
+export function convertStringIntoList(description: string): Array<string> {
+  const matches = description.match(/<li[^>]*>([\s\S]*?)<\/li>/g);
+  if (!matches) return [];
+
+  return matches.map((item) => item.replace(/<\/?li[^>]*>/g, ""));
 }

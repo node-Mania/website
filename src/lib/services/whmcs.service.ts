@@ -44,8 +44,9 @@ async function callWhmcsApi<T>(
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: body.toString(),
-        // Don't cache at the fetch level — we handle TTL in the route
-        cache: "no-store",
+        // Use ISR (Incremental Static Regeneration)
+        // Revalidate every hour (3600 seconds)
+        next: { revalidate: 3600 },
     });
 
 
