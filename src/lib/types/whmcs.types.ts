@@ -109,9 +109,83 @@ export interface ProductGroup {
     products: CleanProduct[];
 }
 
-/** The API response our Next.js route sends to the frontend */
+// ─────────────────────────────────────────────
+// Domain Types
+// ─────────────────────────────────────────────
+
+export interface TldPricing {
+    extension: string;
+    register: Record<string, string>;
+    transfer: Record<string, string>;
+    renew: Record<string, string>;
+    categories: string[];
+    addons: {
+        dns: boolean;
+        email: boolean;
+        idprotect: boolean;
+    };
+    group: string;
+    grace_period: {
+        days: number;
+        price: string;
+    };
+    grace_period_days: number;
+    grace_period_fee: string;
+    redemption_period: string | null;
+}
+
+export interface WhmcsGetTldPricingResponse {
+    result: "success" | "error";
+    message?: string;
+    currency: {
+        id: number;
+        code: string;
+        prefix: string;
+        suffix: string;
+    };
+    pricing: Record<string, {
+        register: Record<string, string>;
+        transfer: Record<string, string>;
+        renew: Record<string, string>;
+        categories: string[];
+        addons: {
+            dns: boolean;
+            email: boolean;
+            idprotect: boolean;
+        };
+        group: string;
+        grace_period: {
+            days: number;
+            price: string;
+        };
+        grace_period_days: number;
+        grace_period_fee: string;
+        redemption_period: string | null;
+    }>;
+}
+
+export interface DomainWhoisResponse {
+    result: "success" | "error" | "available" | "unavailable";
+    status: "available" | "unavailable" | "error";
+    domain: string;
+    message?: string;
+}
+
+/** The API response for products */
 export interface ProductsApiResponse {
     success: boolean;
     data: ProductGroup[] | CleanProduct[];
+    error?: string;
+}
+
+/** The API response for TLD pricing */
+export interface TldPricingApiResponse {
+    success: boolean;
+    currency: {
+        code: string;
+        prefix: string;
+        suffix: string;
+    };
+    tlds: TldPricing[];
     error?: string;
 }

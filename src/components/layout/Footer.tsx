@@ -47,7 +47,8 @@ export function Footer() {
                 <div>
                     <h4 className="font-bold text-white mb-6">Services</h4>
                     <ul className="space-y-4 text-sm font-medium">
-                        <li><Link href="#" className="hover:text-primary transition-colors">SSL Certificates</Link></li>
+                        <li><Link href="/web-security/ssl-certificate" className="hover:text-primary transition-colors">SSL Certificates</Link></li>
+                        <li><Link href="/web-security/360-Monitoring" className="hover:text-primary transition-colors">360 Monitoring</Link></li>
                         <li><Link href="#" className="hover:text-primary transition-colors">NordVPN</Link></li>
                         <li><Link href="#" className="hover:text-primary transition-colors">SocialBee</Link></li>
                         <li><Link href="#" className="hover:text-primary transition-colors">E-mail Hosting</Link></li>
@@ -67,7 +68,7 @@ export function Footer() {
             </div>
 
             <div className="container mx-auto px-4 md:px-6 border-t border-white/5 pt-8 text-center text-slate-600 text-sm font-medium flex flex-col md:flex-row justify-between items-center gap-4">
-                <span>&copy; 2026 nodeMaina Inc. All rights reserved.</span>
+                <span>&copy; 2026 nodeMania Inc. All rights reserved.</span>
                 <span className="flex items-center gap-6">
                     <span className="hover:text-white cursor-pointer transition-colors">Privacy Policy</span>
                     <span className="hover:text-white cursor-pointer transition-colors">Terms of Service</span>

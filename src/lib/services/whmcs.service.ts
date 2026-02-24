@@ -5,6 +5,9 @@ import type {
     CleanPricing,
     BillingCycle,
     ProductGroup,
+    WhmcsGetTldPricingResponse,
+    TldPricing,
+    DomainWhoisResponse,
 } from "@/lib/types/whmcs.types";
 
 // ─────────────────────────────────────────────
@@ -117,7 +120,7 @@ function cleanProduct(raw: WhmcsProduct): CleanProduct {
         description: raw.description,
         type: raw.type,
         paytype: raw.paytype,
-        productUrl: raw["product-url"],
+        productUrl: `${WHMCS_BASE_URL}/cart.php?a=add&pid=${raw.pid}`,
         pricing: cleanPricing(raw.pricing),
     };
 }
@@ -160,6 +163,33 @@ export async function getProducts(gid?: number): Promise<CleanProduct[]> {
  */
 export async function getProductsByGroup(gid: number): Promise<CleanProduct[]> {
     return getProducts(gid);
+}
+
+/**
+ * Fetch specific products by their IDs.
+ *
+ * @param pids  Array of product IDs
+ * @returns     Array of cleaned products, in the order of input PIDs
+ */
+export async function getProductsByPids(pids: number[]): Promise<CleanProduct[]> {
+    const results = await Promise.allSettled(
+        pids.map(pid => callWhmcsApi<WhmcsGetProductsResponse>("GetProducts", { pid }))
+    );
+
+    const products: CleanProduct[] = [];
+    for (let i = 0; i < results.length; i++) {
+        const result = results[i];
+        if (result.status === "fulfilled" && result.value.result === "success") {
+            const raw = result.value.products?.product?.[0];
+            if (raw) {
+                products.push(cleanProduct(raw));
+            }
+        } else {
+            console.error(`[WHMCS] Failed to fetch product pid=${pids[i]}`);
+        }
+    }
+
+    return products;
 }
 
 /**
@@ -250,4 +280,57 @@ export async function getProductGroupsByConfig(
     }
 
     return groups;
+}
+
+// ─────────────────────────────────────────────
+// Domain Methods
+// ─────────────────────────────────────────────
+
+/**
+ * Fetch all TLD prices from WHMCS.
+ */
+export async function getTldPricing(): Promise<{
+    currency: WhmcsGetTldPricingResponse["currency"];
+    tlds: TldPricing[];
+}> {
+    const data = await callWhmcsApi<WhmcsGetTldPricingResponse>("GetTLDPricing");
+
+    if (data.result !== "success") {
+        throw new Error(data.message ?? "Failed to fetch TLD pricing from WHMCS");
+    }
+
+    // console.log(data.pricing);
+    const tlds: TldPricing[] = Object.entries(data.pricing).map(([ext, prices]) => ({
+        extension: ext,
+        register: prices.register,
+        transfer: prices.transfer,
+        renew: prices.renew,
+        categories: prices.categories,
+        addons: prices.addons,
+        group: prices.group,
+        grace_period: prices.grace_period,
+        grace_period_days: prices.grace_period_days,
+        grace_period_fee: prices.grace_period_fee,
+        redemption_period: prices.redemption_period,
+    }));
+
+    return {
+        currency: data.currency,
+        tlds,
+    };
+}
+
+/**
+ * Check if a domain is available.
+ */
+export async function checkDomainAvailability(domain: string): Promise<DomainWhoisResponse> {
+    const data = await callWhmcsApi<DomainWhoisResponse>("DomainWhois", { domain });
+
+    // WHMCS DomainWhois returns result as 'available' or 'unavailable' in some versions, 
+    // or 'success' with a status field.
+    if (data.result === "error") {
+        throw new Error(data.message ?? "Failed to check domain availability");
+    }
+
+    return data;
 }

@@ -11,13 +11,13 @@ import { cn } from "@/lib/utils";
 const NAV_ITEMS = [
     {
         label: "Domains",
-        href: "#",
+        href: "/domains",
         mega: true,
         columns: [
             {
                 title: "Domain Services",
                 items: [
-                    { label: "Domain Registration", href: "#", icon: <Search className="w-4 h-4 text-blue-500" />, desc: "Find your perfect name" },
+                    { label: "Domain Registration", href: "/domains", icon: <Search className="w-4 h-4 text-blue-500" />, desc: "Find your perfect name" },
                     { label: "Domain Transfer", href: "#", icon: <ArrowRight className="w-4 h-4 text-green-500" />, desc: "Move your domain to us" },
                     { label: "Bulk Search", href: "#", icon: <Database className="w-4 h-4 text-purple-500" />, desc: "Register multiple domains" },
                 ]
@@ -99,7 +99,8 @@ const NAV_ITEMS = [
             {
                 title: "Security",
                 items: [
-                    { label: "SSL Certificates", href: "#", icon: <Lock className="w-4 h-4 text-emerald-500" />, desc: "Encryption for users" },
+                    { label: "SSL Certificates", href: "/web-security/ssl-certificate", icon: <Lock className="w-4 h-4 text-emerald-500" />, desc: "Encryption for users" },
+                    { label: "360 Monitoring", href: "/web-security/360-Monitoring", icon: <Activity className="w-4 h-4 text-blue-500" />, desc: "Real-time site health" },
                     { label: "NordVPN", href: "#", icon: <Shield className="w-4 h-4 text-blue-500" />, desc: "Private browsing" },
                     { label: "SiteLock", href: "#", icon: <Lock className="w-4 h-4 text-red-500" />, desc: "Malware scanning" },
                 ]
@@ -142,15 +143,15 @@ export function Navbar() {
                 "fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b",
                 isScrolled
                     ? "bg-white/90 backdrop-blur-md border-slate-200 py-3 shadow-sm"
-                    : "bg-white border-transparent py-5"
+                    : "bg-transparent border-transparent py-5"
             )}
             onMouseLeave={() => setActiveDropdown(null)}
         >
             <div className="container mx-auto px-4 md:px-6 flex items-center justify-between relative">
                 {/* Logo */}
                 <Link href="/" className="flex items-center gap-2 group z-50 relative">
-                    <div className="w-[250px] h-[60px]">
-                        <Image src="/logo/dark-logo.png" alt="nodeMania" fill />
+                    <div className="relative w-[180px] h-[45px]">
+                        <Image src="/logo/dark-logo.png" alt="nodeMania" fill className="object-contain" />
                     </div>
                 </Link>
 
@@ -166,9 +167,7 @@ export function Navbar() {
                                 href={item.href}
                                 className={cn(
                                     "flex items-center gap-1.5 text-sm font-bold transition-all duration-200",
-                                    isScrolled
-                                        ? (activeDropdown === item.label ? "text-primary" : "text-slate-600 hover:text-primary")
-                                        : (activeDropdown === item.label ? "text-primary" : "text-slate-600 hover:text-primary")
+                                    (activeDropdown === item.label ? "text-primary" : "text-slate-600 hover:text-primary")
                                 )}
                             >
                                 {item.label}
@@ -183,10 +182,7 @@ export function Navbar() {
                     <Button
                         variant="ghost"
                         size="sm"
-                        className={cn(
-                            "font-bold transition-colors",
-                            isScrolled ? "text-slate-600 hover:text-primary" : "text-slate-600 hover:text-primary"
-                        )}
+                        className="font-bold text-slate-600 hover:text-primary transition-colors"
                     >
                         Login
                     </Button>
@@ -197,7 +193,7 @@ export function Navbar() {
                 <button
                     className={cn(
                         "lg:hidden p-2 rounded-lg transition-colors z-50",
-                        isScrolled ? "text-slate-800 hover:bg-slate-100" : "text-white hover:bg-white/10"
+                        isScrolled ? "text-slate-800 hover:bg-slate-100" : "text-slate-800 hover:bg-white/10"
                     )}
                     onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 >

@@ -6,6 +6,8 @@ import HomeContent from '@/components/sections/HomeContent';
 import { getProductGroupsByConfig } from "@/lib/services/whmcs.service";
 import type { ProductGroup } from "@/lib/types/whmcs.types";
 
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: 'High-Performance Cloud Hosting for Everyone | nodeMaina',
   description: 'Experience lightning-fast speeds, 99.9% uptime, and 24/7 expert support. Whether you\'re starting a blog or running an enterprise, nodeMaina scales with you.',
@@ -24,9 +26,9 @@ export default async function HomePage() {
       { gid: 1, groupName: 'Basic Web Hosting' },
       { gid: 9, groupName: 'Business Web Hosting' },
       { gid: 12, groupName: 'Wordpress Hosting' },
-      { gid: 10, groupName: 'Managed VPS' },
+      // { gid: 10, groupName: 'Managed VPS' },
     ]);
-    console.log("[WHMCS] Product groups fetched successfully:", productGroups);
+    console.log("productGroups", productGroups);
   } catch (error) {
     console.error("[WHMCS] Failed to fetch product groups:", error);
     // Page still renders — PricingSection falls back to static data
