@@ -175,6 +175,15 @@ export function Navbar() {
                             </Link>
                         </div>
                     ))}
+                    {/* Blog link */}
+                    <div className="px-4 py-2">
+                        <Link
+                            href="/blog"
+                            className="text-sm font-bold text-slate-600 hover:text-primary transition-all duration-200"
+                        >
+                            Blog
+                        </Link>
+                    </div>
                 </div>
 
                 {/* Right Actions */}
@@ -259,6 +268,6 @@ export function Navbar() {
                     ))}
                 </div>
             </div>
-        </nav>
+        </nav >
     );
 }
