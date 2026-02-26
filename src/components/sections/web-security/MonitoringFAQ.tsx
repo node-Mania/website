@@ -63,12 +63,12 @@ export function MonitoringFAQ() {
                             <div className="p-6 rounded-3xl bg-primary-50 border border-primary-100">
                                 <h4 className="font-bold text-primary-900 mb-2 tracking-tight">Need more help?</h4>
                                 <p className="text-sm text-primary-700 leading-relaxed mb-4">Our support team is available 24/7 to answer any technical questions you might have.</p>
-                                <a
+                                <button
                                     onClick={() => window.Tawk_API.maximize()}
                                     className="text-primary-600 text-sm font-bold flex items-center gap-2 hover:gap-3 transition-all">
                                     Contact Support
                                     <Plus className="w-4 h-4 rotate-45" />
-                                </a>
+                                </button>
                             </div>
                         </motion.div>
                     </div>

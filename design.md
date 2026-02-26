@@ -1,7 +1,3 @@
----
-trigger: always_on
----
-
 # nodeMania Design & Vibe System
 
 This document defines the visual and architectural standards for the nodeMania website. It serves as the source of truth for "vibe coding" and UI development.
