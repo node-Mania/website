@@ -391,7 +391,7 @@ export function Navbar() {
                                             <span className="inline-block px-3 py-1 bg-white rounded-full text-xs font-bold shadow-sm mb-4">Featured</span>
                                             <h3 className="text-2xl font-bold text-slate-900 mb-2">{item.promo.title}</h3>
                                             <p className="text-slate-600 mb-6 font-medium leading-relaxed">{item.promo.desc}</p>
-                                            <Button size="sm" className="w-fit font-bold">Learn More</Button>
+                                            <Button size="sm" className="w-fit font-bold" onClick={() => window.Tawk_API.maximize()}>Learn More</Button>
                                         </div>
                                     </div>
                                 )}
