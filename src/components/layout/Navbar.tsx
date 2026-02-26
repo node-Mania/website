@@ -19,7 +19,7 @@ const NAV_ITEMS = [
                 items: [
                     { label: "Domain Registration", href: "/domains", icon: <Search className="w-4 h-4 text-blue-500" />, desc: "Find your perfect name" },
                     { label: "Domain Transfer", href: "#", icon: <ArrowRight className="w-4 h-4 text-green-500" />, desc: "Move your domain to us" },
-                    { label: "Bulk Search", href: "#", icon: <Database className="w-4 h-4 text-purple-500" />, desc: "Register multiple domains" },
+                    // { label: "Bulk Search", href: "#", icon: <Database className="w-4 h-4 text-purple-500" />, desc: "Register multiple domains" },
                 ]
             },
             {
@@ -46,16 +46,15 @@ const NAV_ITEMS = [
             {
                 title: "Hosting Solutions",
                 items: [
-                    { label: "Shared Hosting", href: "#", icon: <Globe className="w-4 h-4 text-blue-600" />, desc: "Perfect for startups & blogs" },
-                    { label: "Business Hosting", href: "#", icon: <Server className="w-4 h-4 text-indigo-600" />, desc: "More power & resources" },
-                    { label: "WordPress Hosting", href: "#", icon: <Cpu className="w-4 h-4 text-emerald-600" />, desc: "Optimized for WP speed" },
+                    { label: "Basic Hosting", href: "/web-hosting", icon: <Globe className="w-4 h-4 text-blue-600" />, desc: "Perfect for startups & blogs" },
+                    { label: "Business Hosting", href: "/business-hosting", icon: <Server className="w-4 h-4 text-indigo-600" />, desc: "More power & resources" },
+
                 ]
             },
             {
                 title: "Specialty Hosting",
                 items: [
-                    { label: "Ecommerce Hosting", href: "#", icon: <Zap className="w-4 h-4 text-amber-500" />, desc: "WooCommerce ready" },
-                    { label: "Reseller Hosting", href: "#", icon: <Signal className="w-4 h-4 text-pink-500" />, desc: "Start your own agency" },
+                    { label: "WordPress Hosting", href: "/wordpress-hosting", icon: <Cpu className="w-4 h-4 text-emerald-600" />, desc: "Optimized for WP speed" },
                 ]
             }
         ],
@@ -65,32 +64,32 @@ const NAV_ITEMS = [
             color: "bg-emerald-50"
         }
     },
-    {
-        label: "Servers",
-        href: "#",
-        mega: true,
-        columns: [
-            {
-                title: "Virtual Servers",
-                items: [
-                    { label: "Cloud VPS", href: "#", icon: <Cloud className="w-4 h-4 text-cyan-500" />, desc: "Scalable compute power" },
-                    { label: "Storage VPS", href: "#", icon: <Database className="w-4 h-4 text-orange-500" />, desc: "Massive storage instances" },
-                ]
-            },
-            {
-                title: "Dedicated Power",
-                items: [
-                    { label: "Dedicated Servers", href: "#", icon: <Server className="w-4 h-4 text-slate-800" />, desc: "Single-tenant metal" },
-                    { label: "Bare Metal", href: "#", icon: <Cpu className="w-4 h-4 text-red-600" />, desc: "Raw performance access" },
-                ]
-            }
-        ],
-        promo: {
-            title: "NVMe Gen5 Speed",
-            desc: "All servers powered by the latest enterprise Gen5 storage.",
-            color: "bg-orange-50"
-        }
-    },
+    // {
+    //     label: "Servers",
+    //     href: "#",
+    //     mega: true,
+    //     columns: [
+    //         {
+    //             title: "Virtual Servers",
+    //             items: [
+    //                 { label: "Cloud VPS", href: "#", icon: <Cloud className="w-4 h-4 text-cyan-500" />, desc: "Scalable compute power" },
+    //                 { label: "Storage VPS", href: "#", icon: <Database className="w-4 h-4 text-orange-500" />, desc: "Massive storage instances" },
+    //             ]
+    //         },
+    //         {
+    //             title: "Dedicated Power",
+    //             items: [
+    //                 { label: "Dedicated Servers", href: "#", icon: <Server className="w-4 h-4 text-slate-800" />, desc: "Single-tenant metal" },
+    //                 { label: "Bare Metal", href: "#", icon: <Cpu className="w-4 h-4 text-red-600" />, desc: "Raw performance access" },
+    //             ]
+    //         }
+    //     ],
+    //     promo: {
+    //         title: "NVMe Gen5 Speed",
+    //         desc: "All servers powered by the latest enterprise Gen5 storage.",
+    //         color: "bg-orange-50"
+    //     }
+    // },
     {
         label: "Security & Tools",
         href: "#",
@@ -119,6 +118,12 @@ const NAV_ITEMS = [
             desc: "Keep your business online with proactive infrastructure monitoring.",
             color: "bg-purple-50"
         }
+    },
+    {
+        label: "Blogs",
+        href: "/blog",
+        mega: false,
+
     },
 ];
 
@@ -161,29 +166,21 @@ export function Navbar() {
                         <div
                             key={item.label}
                             className="px-4 py-2"
-                            onMouseEnter={() => setActiveDropdown(item.label)}
+                            onMouseEnter={() => item.mega ? setActiveDropdown(item.label) : null}
                         >
                             <Link
                                 href={item.href}
                                 className={cn(
-                                    "flex items-center gap-1.5 text-sm font-bold transition-all duration-200",
-                                    (activeDropdown === item.label ? "text-primary" : "text-slate-600 hover:text-primary")
+                                    "flex items-center gap-1.5 text-sm font-medium transition-all duration-200",
+                                    (activeDropdown === item.label ? "text-primary" : "text-slate-800 hover:text-primary")
                                 )}
                             >
                                 {item.label}
-                                <ChevronDown className={cn("w-3 h-3 transition-transform duration-300", activeDropdown === item.label ? "rotate-180" : "")} />
+                                {item.mega && <ChevronDown className={cn("w-3 h-3 transition-transform duration-300", activeDropdown === item.label ? "rotate-180" : "")} />}
                             </Link>
                         </div>
                     ))}
-                    {/* Blog link */}
-                    <div className="px-4 py-2">
-                        <Link
-                            href="/blog"
-                            className="text-sm font-bold text-slate-600 hover:text-primary transition-all duration-200"
-                        >
-                            Blog
-                        </Link>
-                    </div>
+
                 </div>
 
                 {/* Right Actions */}

@@ -35,11 +35,12 @@ export async function generateMetadata({
     const seo = post.seo;
 
     return {
-        title: seo?.title || `${post.title} | nodeMania Blog`,
+        title: seo?.title || `${post.title} | Blog`,
         description: seo?.metaDesc || post.excerpt?.replace(/<[^>]*>/g, "").slice(0, 160),
         alternates: {
             canonical: seo?.canonical || `${SITE_URL}/blog/${slug}`,
         },
+        keywords: seo?.focuskw || "nodeMania, Blog",
         openGraph: {
             title: seo?.opengraphTitle || post.title,
             description: seo?.opengraphDescription || seo?.metaDesc,
@@ -103,13 +104,22 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
     const postUrl = `${SITE_URL}/blog/${slug}`;
 
+
+
+
     return (
-        <main className="min-h-screen bg-[#f7fbff] font-sans overflow-x-hidden">
-            <Navbar />
-            <BlogContent post={post} url={postUrl} />
-            <RelatedPosts posts={relatedPosts} />
-            <BlogCTA />
-            <Footer />
-        </main>
+        <>
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: post.seo.schema.raw }}
+            />
+            <main className="min-h-screen bg-[#f7fbff] font-sans overflow-x-hidden">
+                <Navbar />
+                <BlogContent post={post} url={postUrl} />
+                <RelatedPosts posts={relatedPosts} />
+                <BlogCTA />
+                <Footer />
+            </main>
+        </>
     );
 }

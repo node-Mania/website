@@ -68,6 +68,7 @@ export interface WPCategory {
     name: string;
     slug: string;
     count: number | null;
+    description?: string;
 }
 
 /** Tag attached to a post */

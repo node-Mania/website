@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
             allow: '/',
             disallow: '/private/',
         },
-        sitemap: 'https://nodemaina.com/sitemap.xml',
+        sitemap: 'https://nodemania.com/sitemap.xml',
     };
 }

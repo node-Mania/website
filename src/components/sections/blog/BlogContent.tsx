@@ -51,7 +51,7 @@ export function BlogContent({ post, url }: BlogContentProps) {
                         {post.categories.nodes.map((cat) => (
                             <Link
                                 key={cat.id}
-                                href={`/blog?category=${cat.slug}`}
+                                href={`/category/${cat.slug}`}
                                 className="px-3 py-1 rounded-full bg-blue-50 text-blue-600 text-xs font-semibold hover:bg-blue-100 transition-colors"
                             >
                                 {cat.name}
