@@ -79,7 +79,7 @@ export function WordPressHostingFeatures() {
                             className="bg-slate-50 p-6 rounded-3xl border border-slate-100 hover:shadow-xl hover:shadow-slate-200/50 transition-all duration-300 group"
                         >
                             <div className={`w-12 h-12 rounded-xl ${feature.color} bg-opacity-10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}>
-                                <feature.icon className={`w-6 h-6 text-${feature.color.split('-')[1]}-600`} />
+                                <feature.icon className={`w-6 h-6 text-white`} />
                             </div>
                             <h3 className="text-xl font-bold text-slate-900 mb-3">{feature.title}</h3>
                             <p className="text-slate-600 text-sm leading-relaxed">

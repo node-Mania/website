@@ -12,8 +12,8 @@ const FAQS = [
         answer: 'Yes! All our Business Hosting plans come with the ability to host unlimited websites. You can manage all your client sites or personal projects from a single, easy-to-use control panel.'
     },
     {
-        question: 'What is "White-Label" hosting?',
-        answer: 'White-label hosting allows you to remove our branding from the control panel and replace it with your own agency name and logo. This lets you resell hosting services to your clients while maintaining a professional, consistent brand experience.'
+        question: 'What is "Autoscaling" hosting?',
+        answer: 'Autoscaling hosting automatically adjusts the amount of resources allocated to your website based on traffic levels, ensuring optimal performance and cost efficiency.'
     },
     {
         question: 'Do you offer free migrations for multiple sites?',
@@ -25,7 +25,7 @@ const FAQS = [
     },
     {
         question: 'What happens if I outgrow my plan?',
-        answer: 'Scaling is seamless. You can upgrade to a higher tier Business plan or move to our VPS/Dedicated solutions at any time with just a few clicks, without any interruption to your services.'
+        answer: 'You can upgrade to a higher tier Business plan or move to our VPS/Dedicated solutions at any time, without any interruption to your services.'
     }
 ];
 

@@ -20,7 +20,7 @@ export function DomainsHero({ tlds, currency }: TLDPricingTableProps) {
 
     const popularTlds = useMemo(() => {
 
-        const targetExtensions = ['com', 'net', 'io', 'org'];
+        const targetExtensions = ['com', 'net', 'io', 'ai'];
         const filteredDomains = tlds.filter((item) =>
             targetExtensions.includes(item.extension)
         );
@@ -31,7 +31,7 @@ export function DomainsHero({ tlds, currency }: TLDPricingTableProps) {
 
 
     return (
-        <section className="relative pt-32 pb-20 overflow-hidden bg-gradient-to-br from-blue-50 via-white to-cyan-50">
+        <section className="relative pt-32 pb-20 overflow-hidden bg-white border-b border-slate-200">
             {/* Background Decor */}
             <div className="absolute top-0 right-0 -z-0 w-1/3 h-full bg-gradient-to-l from-primary/5 to-transparent blur-3xl" />
             <div className="absolute bottom-0 left-0 -z-0 w-1/3 h-1/2 bg-gradient-to-tr from-secondary/5 to-transparent blur-3xl" />

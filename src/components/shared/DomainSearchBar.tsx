@@ -50,8 +50,8 @@ export function DomainSearchBar({
                 </div>
                 <Button
                     type="submit"
-                    disabled={isLoading || !query}
-                    className="h-12 px-8 font-bold"
+
+                    className="h-12 px-8 font-medium"
                 >
                     {isLoading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Search className="w-4 h-4 mr-2" />}
                     Search

@@ -21,10 +21,6 @@ const faqs = [
     {
         question: "What happens if I miss a renewal payment?",
         answer: "We offer a 30-day grace period for most TLDs where you can renew at normal prices. We'll send you multiple reminders before and after the expiry date to ensure you don't lose your valuable digital assets."
-    },
-    {
-        question: "Do you offer bulk domain registration discounts?",
-        answer: "Yes, we offer tiered pricing for customers managing large portfolios. Contact our sales team if you plan to register or transfer more than 50 domains for a custom quote."
     }
 ];
 

@@ -6,6 +6,7 @@ import { WebHostingPricing } from '@/components/sections/web-hosting/WebHostingP
 import { WebHostingFeatures } from '@/components/sections/web-hosting/WebHostingFeatures';
 import { WebHostingTechSpecs } from '@/components/sections/web-hosting/WebHostingTechSpecs';
 import { WebHostingFAQ } from '@/components/sections/web-hosting/WebHostingFAQ';
+import { HostingSecurity } from '@/components/sections/hosting-shared/HostingSecurity';
 import { getProductGroupsByConfig } from "@/lib/services/whmcs.service";
 
 export const metadata: Metadata = {
@@ -40,6 +41,7 @@ export default async function WebHostingPage() {
             <WebHostingHero />
             <WebHostingPricing productGroup={productGroup} />
             <WebHostingFeatures />
+            <HostingSecurity />
             <WebHostingTechSpecs />
             <WebHostingFAQ />
             <Footer />

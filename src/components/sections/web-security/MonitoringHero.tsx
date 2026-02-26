@@ -94,37 +94,39 @@ export function MonitoringHero() {
                             initial={{ opacity: 0, scale: 0.9 }}
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ duration: 0.7, delay: 0.2 }}
-                            className="relative aspect-video max-w-[600px] mx-auto group"
+                            className="relative aspect-video max-w-[600px] mx-auto flex items-center justify-center"
                         >
-                            {/* Dashboard Visual */}
-                            <div className="absolute inset-0 bg-primary-100 rounded-[2.5rem] blur-[80px] opacity-60 animate-pulse" />
+                            {/* Animated Background Blob */}
+                            <div className="absolute inset-0 bg-slate-100 rounded-full blur-[100px] animate-pulse" />
 
-                            <div className="relative z-10 w-full h-full bg-slate-900 rounded-[2.5rem] border border-slate-800 shadow-2xl overflow-hidden p-6 flex flex-col gap-6">
-                                <div className="flex justify-between items-center bg-slate-800/50 p-3 rounded-2xl border border-white/5">
+                            <div className="relative z-10 w-full h-full bg-white/80 rounded-[2.5rem] border border-slate-200 backdrop-blur-xl shadow-2xl overflow-hidden p-6 flex flex-col gap-6">
+                                <div className="absolute inset-0 bg-gradient-to-br from-primary-50 to-transparent opacity-50" />
+
+                                <div className="relative z-20 flex justify-between items-center bg-slate-100/50 p-3 rounded-2xl border border-slate-200">
                                     <div className="flex items-center gap-3">
-                                        <div className="w-8 h-2 bg-slate-700 rounded-full" />
-                                        <div className="w-16 h-2 bg-slate-600 rounded-full" />
+                                        <div className="w-8 h-2 bg-slate-200 rounded-full" />
+                                        <div className="w-16 h-2 bg-slate-200 rounded-full" />
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <div className="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.5)] animate-pulse" />
-                                        <span className="text-[10px] text-green-500 font-bold uppercase tracking-widest text-nowrap">Status: Operational</span>
+                                        <span className="text-[10px] text-green-600 font-bold uppercase tracking-widest text-nowrap">Status: Operational</span>
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-3 gap-4">
+                                <div className="relative z-20 grid grid-cols-3 gap-4">
                                     {[
                                         { label: 'Latency', value: '42ms', color: 'blue' },
                                         { label: 'Uptime', value: '99.98%', color: 'green' },
                                         { label: 'Errors', value: '0', color: 'red' }
                                     ].map((stat, i) => (
-                                        <div key={i} className="bg-slate-800/80 rounded-2xl border border-white/5 p-4">
-                                            <div className="text-[10px] text-slate-400 uppercase font-bold tracking-tight mb-1">{stat.label}</div>
-                                            <div className={`text-xl font-bold text-${stat.color}-400`}>{stat.value}</div>
+                                        <div key={i} className="bg-white/50 rounded-2xl border border-slate-100 p-4">
+                                            <div className="text-[10px] text-slate-400 uppercase font-black tracking-tighter mb-1">{stat.label}</div>
+                                            <div className={`text-xl font-bold text-${stat.color}-600`}>{stat.value}</div>
                                         </div>
                                     ))}
                                 </div>
 
-                                <div className="flex-1 bg-slate-800/30 rounded-2xl border border-white/5 p-4 relative overflow-hidden flex flex-col justify-end">
+                                <div className="relative z-20 flex-1 bg-white/30 rounded-2xl border border-slate-100 p-4 relative overflow-hidden flex flex-col justify-end">
                                     <div className="absolute inset-0 p-4">
                                         <svg viewBox="0 0 100 30" className="w-full h-full text-primary-500/20 stroke-current fill-none">
                                             <motion.path
@@ -136,7 +138,7 @@ export function MonitoringHero() {
                                             />
                                         </svg>
                                     </div>
-                                    <div className="flex justify-between text-[8px] text-slate-500 font-mono mt-auto relative z-10 uppercase tracking-tighter">
+                                    <div className="flex justify-between text-[8px] text-slate-400 font-mono mt-auto relative z-10 uppercase tracking-tighter">
                                         <span>12:00</span>
                                         <span>15:00</span>
                                         <span>18:00</span>
@@ -149,7 +151,7 @@ export function MonitoringHero() {
                             <motion.div
                                 animate={{ y: [0, -10, 0] }}
                                 transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                                className="absolute -top-6 -right-6 p-4 bg-white border border-slate-100 rounded-2xl shadow-xl shadow-slate-200 z-20"
+                                className="absolute -top-6 -right-6 p-4 bg-white border border-slate-100 rounded-2xl shadow-xl z-20"
                             >
                                 <Bell className="w-6 h-6 text-primary-600" />
                             </motion.div>
@@ -157,7 +159,7 @@ export function MonitoringHero() {
                             <motion.div
                                 animate={{ y: [0, 10, 0] }}
                                 transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-                                className="absolute -bottom-6 -left-6 p-4 bg-white border border-slate-100 rounded-2xl shadow-xl shadow-slate-200 z-20"
+                                className="absolute -bottom-6 -left-6 p-4 bg-white border border-slate-100 rounded-2xl shadow-xl z-20"
                             >
                                 <Search className="w-6 h-6 text-blue-600" />
                             </motion.div>

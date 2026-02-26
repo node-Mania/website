@@ -6,6 +6,7 @@ import { BusinessHostingPricing } from '@/components/sections/business-hosting/B
 import { BusinessHostingFeatures } from '@/components/sections/business-hosting/BusinessHostingFeatures';
 import { BusinessHostingTechSpecs } from '@/components/sections/business-hosting/BusinessHostingTechSpecs';
 import { BusinessHostingFAQ } from '@/components/sections/business-hosting/BusinessHostingFAQ';
+import { HostingSecurity } from '@/components/sections/hosting-shared/HostingSecurity';
 import { getProductGroupsByConfig } from "@/lib/services/whmcs.service";
 
 export const metadata: Metadata = {
@@ -42,6 +43,7 @@ export default async function BusinessHostingPage() {
             <BusinessHostingHero />
             <BusinessHostingPricing productGroup={productGroup} />
             <BusinessHostingFeatures />
+            <HostingSecurity />
             <BusinessHostingTechSpecs />
             <BusinessHostingFAQ />
             <Footer />

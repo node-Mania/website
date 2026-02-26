@@ -76,7 +76,7 @@ export function WebHostingFeatures() {
                         >
                             <div className={`w-14 h-14 rounded-2xl ${feature.color} bg-opacity-10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}>
                                 <div className={`text-${feature.color.replace('bg-', '')} text-opacity-100`}>
-                                    <feature.icon className={`w-7 h-7 text-${feature.color.split('-')[1]}-600`} />
+                                    <feature.icon className={`w-7 h-7 text-white`} />
                                 </div>
                             </div>
                             <h3 className="text-2xl font-bold text-slate-900 mb-4">{feature.title}</h3>

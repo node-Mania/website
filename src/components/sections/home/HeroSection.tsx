@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence, Variants } from 'framer-motion';
 import { Search, Server, Cloud, Zap, LayoutTemplate, Layers, CheckCircle, ArrowRight, Globe } from 'lucide-react';
 import Image from 'next/image';
+import { DomainSearchBar } from '@/components/shared/DomainSearchBar';
 
 const slides = [
     {
@@ -111,7 +112,13 @@ export function HeroSection() {
     };
 
     return (
-        <section className={`py-20 w-full relative overflow-hidden transition-colors duration-700 bg-gradient-to-br ${currentSlide.bgGradient}`}>
+        <section className="relative pt-32 pb-20 w-full overflow-hidden bg-white border-b border-slate-200">
+            {/* Background Effects */}
+            <div className="absolute inset-0 z-0">
+                <div className="absolute -top-24 -left-24 w-96 h-96 bg-primary-100/50 rounded-full blur-[100px] opacity-50 animate-pulse" />
+                <div className="absolute top-1/2 right-0 w-[500px] h-[500px] bg-teal-100/30 rounded-full blur-[100px] opacity-30" />
+                <div className="absolute inset-0" style={{ backgroundImage: 'radial-gradient(#e2e8f0 1px, transparent 1px)', backgroundSize: '32px 32px' }} />
+            </div>
             <div className="max-w-7xl mx-auto px-6 relative z-10">
                 <div className="grid lg:grid-cols-2 items-center gap-12 min-h-[500px]">
                     {/* Content Side */}
@@ -143,17 +150,18 @@ export function HeroSection() {
 
                                     {/* Domain Search or CTA Buttons */}
                                     {currentSlide.hasSearch ? (
-                                        <div className="bg-white p-2 rounded-xl shadow-lg border border-slate-100 flex flex-col sm:flex-row gap-2 max-w-lg">
-                                            <input
-                                                type="text"
-                                                placeholder="Search your domain..."
-                                                className="flex-1 px-4 py-3 rounded-lg outline-none text-slate-700 placeholder:text-slate-400 bg-transparent"
-                                            />
-                                            <button className="px-8 py-3 bg-primary text-white rounded-lg font-bold hover:bg-primary/90 transition-all flex items-center justify-center gap-2 shadow-md">
-                                                <Search className="w-5 h-5" />
-                                                Search
-                                            </button>
-                                        </div>
+                                        // <div className="bg-white p-2 rounded-xl shadow-lg border border-slate-100 flex flex-col sm:flex-row gap-2 max-w-lg">
+                                        //     <input
+                                        //         type="text"
+                                        //         placeholder="Search your domain..."
+                                        //         className="flex-1 px-4 py-3 rounded-lg outline-none text-slate-700 placeholder:text-slate-400 bg-transparent"
+                                        //     />
+                                        //     <button className="px-8 py-3 bg-primary text-white rounded-lg font-bold hover:bg-primary/90 transition-all flex items-center justify-center gap-2 shadow-md">
+                                        //         <Search className="w-5 h-5" />
+                                        //         Search
+                                        //     </button>
+                                        // </div>
+                                        <DomainSearchBar variant="minimal" />
                                     ) : (
                                         <div className="flex flex-wrap gap-4">
                                             <button className="px-8 py-3 bg-primary text-white rounded-lg font-bold hover:bg-primary/90 transition-all shadow-lg hover:shadow-xl hover:-translate-y-1 flex items-center gap-2">

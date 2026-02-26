@@ -6,6 +6,7 @@ import { WordPressHostingPricing } from '@/components/sections/wordpress-hosting
 import { WordPressHostingFeatures } from '@/components/sections/wordpress-hosting/WordPressHostingFeatures';
 import { WordPressHostingDetails } from '@/components/sections/wordpress-hosting/WordPressHostingDetails';
 import { WordPressHostingFAQ } from '@/components/sections/wordpress-hosting/WordPressHostingFAQ';
+import { HostingSecurity } from '@/components/sections/hosting-shared/HostingSecurity';
 import { getProductGroupsByConfig } from "@/lib/services/whmcs.service";
 
 export const metadata: Metadata = {
@@ -39,6 +40,7 @@ export default async function WordPressHostingPage() {
             <WordPressHostingHero />
             <WordPressHostingPricing productGroup={productGroup} />
             <WordPressHostingFeatures />
+            <HostingSecurity />
             <WordPressHostingDetails />
             <WordPressHostingFAQ />
             <Footer />

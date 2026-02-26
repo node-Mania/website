@@ -104,8 +104,8 @@ export default function CategoryPageClient({
                 onSearchChange={handleSearchChange}
                 title={
                     <>
-                        <span className="text-slate-800">Category:</span>{" "}
-                        <span className="text-gradient">{category.name}</span>
+                        <span className="text-slate-900">Category:</span>{" "}
+                        <span className="text-primary-600">{category.name}</span>
                     </>
                 }
                 subtitle={category.description || `Browse all articles in ${category.name}.`}

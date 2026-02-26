@@ -19,11 +19,12 @@ export function BlogHero({
     showSearch = true
 }: BlogHeroProps) {
     return (
-        <section className="relative pt-32 pb-16 overflow-hidden">
-            {/* Background decoration */}
-            <div className="absolute inset-0 -z-10">
-                <div className="absolute top-20 left-1/4 w-72 h-72 bg-blue-100 rounded-full blur-[100px] opacity-60" />
-                <div className="absolute top-40 right-1/4 w-64 h-64 bg-teal-100 rounded-full blur-[100px] opacity-50" />
+        <section className="relative pt-32 pb-20 overflow-hidden bg-white border-b border-slate-200">
+            {/* Background Effects */}
+            <div className="absolute inset-0 z-0">
+                <div className="absolute -top-24 -left-24 w-96 h-96 bg-primary-100/50 rounded-full blur-[100px] opacity-50 animate-pulse" />
+                <div className="absolute top-1/2 right-0 w-[500px] h-[500px] bg-teal-100/30 rounded-full blur-[100px] opacity-30" />
+                <div className="absolute inset-0" style={{ backgroundImage: 'radial-gradient(#e2e8f0 1px, transparent 1px)', backgroundSize: '32px 32px' }} />
             </div>
 
             <div className="container mx-auto px-4 md:px-6 text-center">
@@ -36,18 +37,18 @@ export function BlogHero({
                         Blog & Resources
                     </span>
 
-                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-6">
+                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight mb-6 text-slate-900">
                         {title ? (
                             title
                         ) : (
                             <>
-                                <span className="text-gradient">nodeMania</span>{" "}
-                                <span className="text-slate-800">Blog</span>
+                                <span className="text-primary-600">nodeMania</span>{" "}
+                                <span className="text-slate-900">Blog</span>
                             </>
                         )}
                     </h1>
 
-                    <p className="text-lg md:text-xl text-slate-500 max-w-2xl mx-auto mb-10 leading-relaxed">
+                    <p className="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto mb-10 leading-relaxed">
                         {subtitle || "Insights, tutorials, and news about web hosting, security, performance, and everything in between."}
                     </p>
                 </motion.div>
