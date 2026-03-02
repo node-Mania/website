@@ -89,20 +89,19 @@ export function BusinessEmailPricing({ products }: { products: CleanProduct[] })
                                     </div>
 
                                     <ul className="space-y-4 mb-8 flex-grow">
-                                        {((product.features && product.features.length > 0)
-                                            ? product.features
-                                            : [
-                                                '10GB - 50GB Email Storage',
-                                                'Webmail, Calendar, Tasks & Contacts',
-                                                'Premium Anti-Spam & Anti-Virus',
-                                                'Mobile & Desktop Sync (IMAP/CalDAV)',
-                                                isPro ? 'OX Drive (Cloud File Storage)' : 'Standard Features',
-                                                isPro ? 'OX Documents (Text, Spreadsheets, Presentations)' : 'Reliable & Secure',
-                                            ]
+
+                                        {([
+                                            '10GB - 50GB Email Storage',
+                                            'Webmail, Calendar, Tasks & Contacts',
+                                            'Premium Anti-Spam & Anti-Virus',
+                                            'Mobile & Desktop Sync (IMAP/CalDAV)',
+                                            isPro ? 'OX Drive (Cloud File Storage)' : 'Standard Features',
+                                            isPro ? 'OX Documents (Text, Spreadsheets, Presentations)' : 'Reliable & Secure',
+                                        ]
                                         ).map((feature, i) => (
                                             <li key={i} className="flex items-start gap-3 text-sm text-slate-700">
                                                 <Check className="w-5 h-5 text-teal-500 flex-shrink-0" />
-                                                <span dangerouslySetInnerHTML={{ __html: typeof feature === 'string' ? feature : feature.feature }} />
+                                                <span dangerouslySetInnerHTML={{ __html: feature }} />
                                             </li>
                                         ))}
                                     </ul>
