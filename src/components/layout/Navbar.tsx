@@ -7,18 +7,19 @@ import { Button } from "@/components/ui/Button";
 import { ChevronDown, Globe, Server, Cpu, Shield, Menu, X, Cloud, Lock, Mail, Activity, Signal, Search, ArrowRight, Database, Zap } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { public_routes } from "@/lib/constants/routes";
 
 const STATIC_NAV_ITEMS = [
 
     {
         label: "Domains",
-        href: "/domains",
+        href: public_routes.DOMAINS,
         mega: true,
         columns: [
             {
                 title: "Domain Services",
                 items: [
-                    { label: "Domain Registration", href: "/domains", icon: <Search className="w-4 h-4 text-blue-500" />, desc: "Find your perfect name" },
+                    { label: "Domain Registration", href: public_routes.DOMAINS, icon: <Search className="w-4 h-4 text-blue-500" />, desc: "Find your perfect name" },
                     { label: "Domain Transfer", href: "https://my.nodemania.com/cart.php?a=add&domain=transfer", icon: <ArrowRight className="w-4 h-4 text-green-500" />, desc: "Move your domain to us" },
                     // { label: "Bulk Search", href: "#", icon: <Database className="w-4 h-4 text-purple-500" />, desc: "Register multiple domains" },
                 ]
@@ -48,15 +49,15 @@ const STATIC_NAV_ITEMS = [
             {
                 title: "Hosting Solutions",
                 items: [
-                    { label: "Basic Hosting", href: "/web-hosting", icon: <Globe className="w-4 h-4 text-blue-600" />, desc: "Perfect for startups & blogs" },
-                    { label: "Business Hosting", href: "/business-hosting", icon: <Server className="w-4 h-4 text-indigo-600" />, desc: "More power & resources" },
+                    { label: "Basic Hosting", href: public_routes.WebHosting, icon: <Globe className="w-4 h-4 text-blue-600" />, desc: "Perfect for startups & blogs" },
+                    { label: "Business Hosting", href: public_routes.BusinessHosting, icon: <Server className="w-4 h-4 text-indigo-600" />, desc: "More power & resources" },
 
                 ]
             },
             {
                 title: "Specialty Hosting",
                 items: [
-                    { label: "WordPress Hosting", href: "/wordpress-hosting", icon: <Cpu className="w-4 h-4 text-emerald-600" />, desc: "Optimized for WP speed" },
+                    { label: "WordPress Hosting", href: public_routes.WordPressHosting, icon: <Cpu className="w-4 h-4 text-emerald-600" />, desc: "Optimized for WP speed" },
                 ]
             }
         ],
@@ -93,25 +94,26 @@ const STATIC_NAV_ITEMS = [
     //     }
     // },
     {
-        label: "Security & Tools",
+        label: "Security",
         href: "#",
         mega: true,
         columns: [
             {
                 title: "Security",
                 items: [
-                    { label: "SSL Certificates", href: "/web-security/ssl-certificate", icon: <Lock className="w-4 h-4 text-emerald-500" />, desc: "Encryption for users" },
-                    { label: "360 Monitoring", href: "/web-security/360-Monitoring", icon: <Activity className="w-4 h-4 text-blue-500" />, desc: "Real-time site health" },
-                    { label: "NordVPN", href: "#", icon: <Shield className="w-4 h-4 text-blue-500" />, desc: "Private browsing" },
-                    { label: "SiteLock", href: "#", icon: <Lock className="w-4 h-4 text-red-500" />, desc: "Malware scanning" },
+                    { label: "SSL Certificates", href: public_routes.SSLMonitoring, icon: <Lock className="w-4 h-4 text-emerald-500" />, desc: "Encryption for users" },
+                    { label: "360 Monitoring", href: public_routes.SiteMonitoring, icon: <Activity className="w-4 h-4 text-blue-500" />, desc: "Real-time site health" },
+
+
                 ]
             },
             {
                 title: "Productivity",
                 items: [
-                    { label: "Pro Email", href: "#", icon: <Mail className="w-4 h-4 text-indigo-500" />, desc: "Brandname email" },
-                    { label: "SocialBee", href: "#", icon: <Signal className="w-4 h-4 text-amber-500" />, desc: "Social automation" },
-                    { label: "CodeGuard", href: "#", icon: <Cloud className="w-4 h-4 text-sky-500" />, desc: "Daily backups" },
+                    // { label: "Pro Email", href: "#", icon: <Mail className="w-4 h-4 text-indigo-500" />, desc: "Brandname email" },
+                    // { label: "SocialBee", href: "#", icon: <Signal className="w-4 h-4 text-amber-500" />, desc: "Social automation" },
+                    { label: "NordVPN", href: public_routes.NordVPN, icon: <Shield className="w-4 h-4 text-blue-500" />, desc: "Private browsing" },
+                    { label: "CodeGuard", href: public_routes.Codeguard, icon: <Cloud className="w-4 h-4 text-sky-500" />, desc: "Daily backups" },
                 ]
             }
         ],
@@ -122,8 +124,33 @@ const STATIC_NAV_ITEMS = [
         }
     },
     {
+        label: "Email",
+        href: "#",
+        mega: true,
+        columns: [
+            {
+                title: "Business Email",
+                items: [
+                    { label: "OX App Suite", href: public_routes.OXAppSuite, icon: <Globe className="w-4 h-4 text-blue-600" />, desc: "Perfect for startups & blogs" },
+                    { label: "OX App Suite + Productivity", href: public_routes.OXAppSuitePlusProductivity, icon: <Globe className="w-4 h-4 text-blue-600" />, desc: "Perfect for startups & blogs" },
+                ]
+            },
+            {
+                title: "Email Services",
+                items: [
+                    { label: "Email Security", href: public_routes.EmailServices, icon: <Globe className="w-4 h-4 text-blue-600" />, desc: "Perfect for startups & blogs" },
+                ]
+            }
+        ],
+        promo: {
+            title: "Free Migration",
+            desc: "Expert team will move your site to us for free with zero downtime.",
+            color: "bg-emerald-50"
+        }
+    },
+    {
         label: "Blogs",
-        href: "/blog",
+        href: public_routes.Blog,
         mega: false,
 
     },

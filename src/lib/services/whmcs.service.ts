@@ -43,13 +43,16 @@ async function callWhmcsApi<T>(
     });
 
 
+
+
     const response = await fetch(API_ENDPOINT, {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: body.toString(),
         // Use ISR (Incremental Static Regeneration)
-        // Revalidate every hour (3600 seconds)
-        next: { revalidate: 3600 },
+        // Revalidate every day (86400 seconds) to minimize API hits
+        // Added 'whmcs' tag for manual revalidation
+        next: { revalidate: 86400, tags: ['whmcs'] },
     });
 
 
@@ -61,7 +64,13 @@ async function callWhmcsApi<T>(
         );
     }
 
-    return response.json() as Promise<T>;
+    const text = await response.text();
+    try {
+        return JSON.parse(text) as T;
+    } catch (error) {
+        console.error(`[WHMCS] API returned invalid JSON for action ${action}. Raw response starts with:`, text.substring(0, 2000));
+        throw new Error(`WHMCS API request failed: Invalid JSON response.`);
+    }
 }
 
 // ─────────────────────────────────────────────
@@ -146,6 +155,8 @@ export async function getProducts(gid?: number): Promise<CleanProduct[]> {
         params
     );
 
+    // console.log("data", data);
+
     if (data.result !== "success") {
         throw new Error(data.message ?? "Failed to fetch products from WHMCS");
     }
@@ -172,20 +183,21 @@ export async function getProductsByGroup(gid: number): Promise<CleanProduct[]> {
  * @returns     Array of cleaned products, in the order of input PIDs
  */
 export async function getProductsByPids(pids: number[]): Promise<CleanProduct[]> {
-    const results = await Promise.allSettled(
-        pids.map(pid => callWhmcsApi<WhmcsGetProductsResponse>("GetProducts", { pid }))
-    );
-
     const products: CleanProduct[] = [];
-    for (let i = 0; i < results.length; i++) {
-        const result = results[i];
-        if (result.status === "fulfilled" && result.value.result === "success") {
-            const raw = result.value.products?.product?.[0];
-            if (raw) {
-                products.push(cleanProduct(raw));
+
+    for (const pid of pids) {
+        try {
+            const data = await callWhmcsApi<WhmcsGetProductsResponse>("GetProducts", { pid });
+            if (data.result === "success") {
+                const raw = data.products?.product?.[0];
+                if (raw) {
+                    products.push(cleanProduct(raw));
+                }
+            } else {
+                console.error(`[WHMCS] Failed to fetch product pid=${pid}: ${data.message}`);
             }
-        } else {
-            console.error(`[WHMCS] Failed to fetch product pid=${pids[i]}`);
+        } catch (error) {
+            console.error(`[WHMCS] Error fetching product pid=${pid}:`, error);
         }
     }
 
@@ -257,24 +269,18 @@ export interface GroupConfig {
 export async function getProductGroupsByConfig(
     groupConfigs: GroupConfig[]
 ): Promise<ProductGroup[]> {
-    const results = await Promise.allSettled(
-        groupConfigs.map(async ({ gid, groupName }) => {
-            const products = await getProducts(gid);
-            return { gid, groupName, products } satisfies ProductGroup;
-        })
-    );
-
     const groups: ProductGroup[] = [];
-    for (let i = 0; i < results.length; i++) {
-        const result = results[i];
-        if (result.status === "fulfilled") {
-            if (result.value.products.length > 0) {
-                groups.push(result.value);
+
+    for (const { gid, groupName } of groupConfigs) {
+        try {
+            const products = await getProducts(gid);
+            if (products.length > 0) {
+                groups.push({ gid, groupName, products });
             }
-        } else {
+        } catch (error) {
             console.error(
-                `[WHMCS] Failed to fetch group gid=${groupConfigs[i].gid} ("${groupConfigs[i].groupName}"):`,
-                result.reason
+                `[WHMCS] Failed to fetch group gid=${gid} ("${groupName}"):`,
+                error
             );
         }
     }

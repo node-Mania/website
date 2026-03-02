@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import TawkTo from "@/components/TawkTo";
+import Analytics from "@/components/analytics/Analytics";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -20,6 +21,7 @@ export const metadata: Metadata = {
   },
 };
 
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -28,6 +30,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={inter.variable}>
       <body className="antialiased min-h-screen bg-background text-foreground overflow-x-hidden selection:bg-primary/30">
+        <Analytics />
         {children}
         <TawkTo />
       </body>

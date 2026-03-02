@@ -30,7 +30,7 @@ export default async function DomainsPage() {
     try {
         tldData = await getTldPricing();
 
-        console.log(tldData);
+        // console.log(tldData);
     } catch (error) {
         console.error("Failed to fetch TLD pricing for Domains page:", error);
     }

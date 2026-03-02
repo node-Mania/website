@@ -28,7 +28,7 @@ export default async function HomePage() {
       { gid: 12, groupName: 'Wordpress Hosting' },
       // { gid: 10, groupName: 'Managed VPS' },
     ]);
-    console.log("productGroups", productGroups);
+    // console.log("productGroups", productGroups);
   } catch (error) {
     console.error("[WHMCS] Failed to fetch product groups:", error);
     // Page still renders — PricingSection falls back to static data

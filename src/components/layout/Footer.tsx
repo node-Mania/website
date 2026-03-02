@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Twitter, Github, Linkedin, Cpu } from 'lucide-react';
+import { Twitter, Github, Linkedin, Cpu, LinkedinIcon, Facebook, Instagram } from 'lucide-react';
 import Image from 'next/image';
 
 export function Footer() {
@@ -14,14 +14,13 @@ export function Footer() {
 
                     </Link>
                     <p className="text-slate-500 mb-6 max-w-sm text-sm leading-relaxed font-medium">
-                        Premium Node.js hosting infrastructure aimed at scalability, security, and developer experience.
-                        Deploy in seconds, scale to millions.
+                        Built for uptime, designed for scale
                     </p>
 
                     <div className="flex gap-4 mb-6">
-                        <a href="#" className="w-10 h-10 rounded-full bg-slate-900 border border-white/10 flex items-center justify-center text-slate-400 hover:text-white hover:border-primary/50 hover:bg-primary/10 transition-all"><Twitter className="w-5 h-5" /></a>
-                        <a href="#" className="w-10 h-10 rounded-full bg-slate-900 border border-white/10 flex items-center justify-center text-slate-400 hover:text-white hover:border-primary/50 hover:bg-primary/10 transition-all"><Github className="w-5 h-5" /></a>
                         <a href="#" className="w-10 h-10 rounded-full bg-slate-900 border border-white/10 flex items-center justify-center text-slate-400 hover:text-white hover:border-primary/50 hover:bg-primary/10 transition-all"><Linkedin className="w-5 h-5" /></a>
+                        <a href="#" className="w-10 h-10 rounded-full bg-slate-900 border border-white/10 flex items-center justify-center text-slate-400 hover:text-white hover:border-primary/50 hover:bg-primary/10 transition-all"><Facebook className="w-5 h-5" /></a>
+                        <a href="#" className="w-10 h-10 rounded-full bg-slate-900 border border-white/10 flex items-center justify-center text-slate-400 hover:text-white hover:border-primary/50 hover:bg-primary/10 transition-all"><Instagram className="w-5 h-5" /></a>
                     </div>
 
                     <div className="flex items-center gap-2 text-sm font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-4 py-2 rounded-full w-fit shadow-lg shadow-emerald-500/5">
