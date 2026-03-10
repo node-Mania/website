@@ -2,6 +2,26 @@
 // WHMCS API Types
 // ─────────────────────────────────────────────
 
+/** A single WHMCS currency from the GetCurrencies API */
+export interface WhmcsCurrency {
+    id: number;
+    code: string;
+    prefix: string;
+    suffix: string;
+    format: number;
+    rate: string;
+    default: boolean;
+}
+
+/** Raw WHMCS GetCurrencies API response */
+export interface WhmcsGetCurrenciesResponse {
+    result: string;
+    totalresults: number;
+    currencies: {
+        currency: WhmcsCurrency[];
+    };
+}
+
 /** Pricing breakdown for a single currency */
 export interface WhmcsCurrencyPricing {
     prefix: string;

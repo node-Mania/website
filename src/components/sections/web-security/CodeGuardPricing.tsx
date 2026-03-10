@@ -5,6 +5,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Check, ShieldCheck, Database, LayoutGrid } from 'lucide-react';
 import type { CleanProduct, BillingCycle } from '@/lib/types/whmcs.types';
 import { cn } from '@/lib/utils';
+import { useCurrency } from '@/context/CurrencyContext';
+import { resolvePricing } from '@/lib/utils/pricing';
 
 interface CodeGuardPricingProps {
     products: CleanProduct[];
@@ -12,27 +14,15 @@ interface CodeGuardPricingProps {
 
 type BillingMode = 'monthly' | 'annually';
 
-function getCycle(product: CleanProduct, cycle: string, currency: string = 'USD'): BillingCycle | undefined {
-    const pricing = product.pricing.find(p => p.currency === currency) ?? product.pricing[0];
-    return pricing?.cycles.find(c => c.cycle === cycle);
-}
-
 function formatPrice(prefix: string, price: string): string {
     const num = parseFloat(price);
     if (isNaN(num)) return 'N/A';
     return `${prefix}${num.toFixed(2)}`;
 }
 
-function PriceCard({ product, billingMode, isPopular }: { product: CleanProduct, billingMode: BillingMode, isPopular?: boolean }) {
-    const currency = 'USD';
-    const pricing = product.pricing.find(p => p.currency === currency) ?? product.pricing[0];
-    const prefix = pricing?.prefix ?? '$';
+function PriceCard({ product, billingMode, currency, isPopular }: { product: CleanProduct, billingMode: BillingMode, currency: string, isPopular?: boolean }) {
+    const { prefix, price, displayPrice, cycle: activeCycle } = resolvePricing(product, currency, billingMode);
 
-    const activeCycle = getCycle(product, billingMode, currency) || getCycle(product, 'monthly', currency);
-    const price = activeCycle?.price ?? '0.00';
-
-    // Calculate display price based on mode
-    const displayPrice = billingMode === 'annually' ? (parseFloat(price) / 12).toFixed(2) : price;
 
     // Plan features extraction from name
     const capacityMatch = product.name.match(/\d+GB/i);
@@ -110,6 +100,7 @@ function PriceCard({ product, billingMode, isPopular }: { product: CleanProduct,
 
 export function CodeGuardPricing({ products }: CodeGuardPricingProps) {
     const [billingMode, setBillingMode] = useState<BillingMode>('annually');
+    const { selectedCurrency: currency } = useCurrency();
     const [activeCategory, setActiveCategory] = useState<'standard' | 'power'>('standard');
 
     // Split based on name: standard vs power (Power and Power Plus)
@@ -210,6 +201,7 @@ export function CodeGuardPricing({ products }: CodeGuardPricingProps) {
                                 <PriceCard
                                     key={product.pid}
                                     product={product}
+                                    currency={currency}
                                     billingMode={billingMode}
                                     isPopular={product.name.includes('25GB') || product.name.includes('100GB')}
                                 />

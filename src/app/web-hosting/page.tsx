@@ -38,7 +38,7 @@ export default async function WebHostingPage() {
     return (
         <main className="min-h-screen bg-white font-sans overflow-x-hidden">
             <Navbar />
-            <WebHostingHero />
+            <WebHostingHero productGroup={productGroup} />
             <WebHostingPricing productGroup={productGroup} />
             <WebHostingFeatures />
             <HostingSecurity />

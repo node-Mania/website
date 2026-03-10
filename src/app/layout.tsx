@@ -3,6 +3,9 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import TawkTo from "@/components/TawkTo";
 import Analytics from "@/components/analytics/Analytics";
+import { CurrencyProvider } from "@/context/CurrencyContext";
+import { getCurrencies } from "@/lib/services/whmcs.service";
+import { WhmcsCurrency } from "@/lib/types/whmcs.types";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -22,16 +25,25 @@ export const metadata: Metadata = {
 };
 
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  let currencies: WhmcsCurrency[] = [];
+  try {
+    currencies = await getCurrencies();
+  } catch (err) {
+    console.error("Failed to fetch currencies in layout:", err);
+  }
+
   return (
     <html lang="en" className={inter.variable}>
       <body className="antialiased min-h-screen bg-background text-foreground overflow-x-hidden selection:bg-primary/30">
         <Analytics />
-        {children}
+        <CurrencyProvider initialCurrencies={currencies}>
+          {children}
+        </CurrencyProvider>
         <TawkTo />
       </body>
     </html>

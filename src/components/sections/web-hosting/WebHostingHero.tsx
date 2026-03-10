@@ -4,6 +4,9 @@ import { motion } from 'framer-motion';
 import { CheckCircle, ArrowRight, Zap, ShieldCheck, Leaf, Server } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useCurrency } from '@/context/CurrencyContext';
+import { resolvePricing } from '@/lib/utils/pricing';
+import type { ProductGroup } from '@/lib/types/whmcs.types';
 
 const HERO_FEATURES = [
     'Lightning-Fast Speeds',
@@ -14,7 +17,22 @@ const HERO_FEATURES = [
     '100% Green Hosting',
 ];
 
-export function WebHostingHero() {
+export function WebHostingHero({ productGroup }: { productGroup?: ProductGroup | null }) {
+    const { selectedCurrency: currency } = useCurrency();
+
+    // Find the starting price (lowest price among products)
+    const startingPrice = productGroup?.products.reduce((acc, product) => {
+        const { price, prefix } = resolvePricing(product, currency, 'annually');
+        const numPrice = parseFloat(price) / 12; // Monthly equivalent
+        if (numPrice < acc.value) {
+            return { value: numPrice, prefix };
+        }
+        return acc;
+    }, { value: Infinity, prefix: '$' });
+
+    const displayPrice = startingPrice && startingPrice.value !== Infinity
+        ? startingPrice.value.toFixed(2)
+        : null;
     return (
         <section className="relative pt-32 pb-20 overflow-hidden bg-white border-b border-slate-200">
 
@@ -45,7 +63,11 @@ export function WebHostingHero() {
                             </h1>
 
                             <p className="text-xl text-slate-600 mb-8 max-w-xl leading-relaxed">
-                                Blazing-Fast, Reliable & Secure Web Hosting at Unbeatable Prices. Scale your business with infrastructure designed for performance.
+                                Blazing-Fast, Reliable & Secure Web Hosting {displayPrice && (
+                                    <>
+                                        starting from <span className="font-bold text-slate-900">{startingPrice.prefix}{displayPrice}/mo</span>.
+                                    </>
+                                )} Scale your business with infrastructure designed for performance.
                             </p>
 
                             {/* Feature List */}

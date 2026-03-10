@@ -3,6 +3,8 @@
 import { motion } from 'framer-motion';
 import { ShieldCheck, Server, AlertCircle } from 'lucide-react';
 import type { CleanProduct } from '@/lib/types/whmcs.types';
+import { useCurrency } from '@/context/CurrencyContext';
+import { resolvePricing } from '@/lib/utils/pricing';
 
 export default function EmailServicesPricing({ products }: { products: CleanProduct[] }) {
     if (!products || products.length === 0) {
@@ -15,7 +17,7 @@ export default function EmailServicesPricing({ products }: { products: CleanProd
     }
 
     // Attempt to parse out currency/cycle formatting
-    const currency = 'USD';
+    const { selectedCurrency: currency } = useCurrency();
 
     return (
         <section id="pricing" className="py-24 bg-slate-50 border-t border-b border-slate-100">
@@ -37,22 +39,12 @@ export default function EmailServicesPricing({ products }: { products: CleanProd
 
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
                     {products.map((product, index) => {
-                        const pricing = product.pricing.find(p => p.currency === currency) ?? product.pricing[0];
-                        const prefix = pricing?.prefix ?? '$';
+                        const { prefix, displayPrice: priceDisplay, cycle } = resolvePricing(product, currency, 'monthly');
 
-                        // Check the most reasonable monthly price to display
-                        const validCycles = pricing?.cycles.filter(c => parseFloat(c.price) > 0) || [];
-                        const monthlyCycle = validCycles.find(c => c.cycle === 'monthly') || validCycles[0];
-
-                        let priceDisplay = 'Contact Us';
                         let subText = '';
-                        if (monthlyCycle) {
-                            priceDisplay = `${prefix}${monthlyCycle.price}`;
-                            subText = `/${monthlyCycle.cycle === 'monthly' ? 'mo' : monthlyCycle.cycle}`;
+                        if (cycle) {
+                            subText = `/${cycle.cycle === 'monthly' ? 'mo' : cycle.cycle}`;
                         }
-                        // else if (product.pricing[0]?. === 'free') {
-                        //     priceDisplay = 'Free';
-                        // }
 
                         // Determine highlighting (e.g. Bundles are popular)
                         const isBundle = product.name.toLowerCase().includes('bundle');
@@ -83,7 +75,7 @@ export default function EmailServicesPricing({ products }: { products: CleanProd
                                 <div className="mb-8 border-b border-slate-100 pb-8 flex-grow">
                                     <div className="flex items-end gap-1">
                                         <span className="text-4xl font-extrabold text-slate-900 tracking-tight">
-                                            {priceDisplay}
+                                            {prefix}{priceDisplay}
                                         </span>
                                         <span className="text-slate-500 mb-1.5 text-sm font-medium">{subText}</span>
                                     </div>

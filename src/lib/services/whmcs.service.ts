@@ -8,6 +8,8 @@ import type {
     WhmcsGetTldPricingResponse,
     TldPricing,
     DomainWhoisResponse,
+    WhmcsGetCurrenciesResponse,
+    WhmcsCurrency,
 } from "@/lib/types/whmcs.types";
 
 // ─────────────────────────────────────────────
@@ -294,12 +296,16 @@ export async function getProductGroupsByConfig(
 
 /**
  * Fetch all TLD prices from WHMCS.
+ * @param currencyId Optional currency ID
  */
-export async function getTldPricing(): Promise<{
+export async function getTldPricing(currencyId?: number): Promise<{
     currency: WhmcsGetTldPricingResponse["currency"];
     tlds: TldPricing[];
 }> {
-    const data = await callWhmcsApi<WhmcsGetTldPricingResponse>("GetTLDPricing");
+    const params: Record<string, string | number> = {};
+    if (currencyId) params.currencyid = currencyId;
+
+    const data = await callWhmcsApi<WhmcsGetTldPricingResponse>("GetTLDPricing", params);
 
     if (data.result !== "success") {
         throw new Error(data.message ?? "Failed to fetch TLD pricing from WHMCS");
@@ -339,4 +345,17 @@ export async function checkDomainAvailability(domain: string): Promise<DomainWho
     }
 
     return data;
+}
+
+/**
+ * Fetch all available currencies from WHMCS.
+ */
+export async function getCurrencies(): Promise<WhmcsCurrency[]> {
+    const data = await callWhmcsApi<WhmcsGetCurrenciesResponse>("GetCurrencies");
+
+    if (data.result !== "success") {
+        throw new Error("Failed to fetch currencies from WHMCS");
+    }
+
+    return data.currencies?.currency ?? [];
 }

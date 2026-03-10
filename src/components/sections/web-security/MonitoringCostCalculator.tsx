@@ -2,13 +2,18 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { DollarSign, TrendingDown, AlertTriangle, ShieldCheck } from 'lucide-react';
+import { DollarSign, TrendingDown, AlertTriangle, ShieldCheck, Globe } from 'lucide-react';
+import { useCurrency } from '@/context/CurrencyContext';
 
 export function MonitoringCostCalculator() {
-    const [revenue, setRevenue] = useState<number>(1000000); // Default $1M
+    const { currencies, selectedCurrency } = useCurrency();
+    const activeCurrency = currencies.find(c => c.code === selectedCurrency);
+    const prefix = activeCurrency?.prefix ?? '$';
+
+    const defaultRevenue = selectedCurrency === 'USD' ? 1000000 : (selectedCurrency === 'AED' ? 3670000 : 800000);
+    const [revenue, setRevenue] = useState<number>(defaultRevenue);
     const [downtimeHours, setDowntimeHours] = useState<number>(24); // Default 24h per year
 
-    // Simple calculation: (Revenue / 8760 hours in a year) * downtime hours
     const estimatedLoss = (revenue / 8760) * downtimeHours;
 
     return (
@@ -31,8 +36,8 @@ export function MonitoringCostCalculator() {
                             <div className="space-y-8">
                                 <div>
                                     <div className="flex justify-between mb-4">
-                                        <label className="text-sm font-bold text-slate-900 uppercase tracking-wider">Annual Revenue ($)</label>
-                                        <span className="text-primary-600 font-mono font-bold">${revenue.toLocaleString()}</span>
+                                        <label className="text-sm font-bold text-slate-900 uppercase tracking-wider">Annual Revenue ({prefix})</label>
+                                        <span className="text-primary-600 font-mono font-bold">{prefix}{revenue.toLocaleString()}</span>
                                     </div>
                                     <input
                                         type="range"
@@ -86,7 +91,7 @@ export function MonitoringCostCalculator() {
                                 className="mb-10"
                             >
                                 <div className="text-5xl md:text-7xl font-black text-white tracking-tighter flex items-center justify-center lg:justify-start">
-                                    <span className="text-slate-500 mr-2 text-3xl">$</span>
+                                    <span className="text-slate-500 mr-2 text-3xl">{prefix}</span>
                                     {Math.round(estimatedLoss).toLocaleString()}
                                 </div>
                                 <p className="text-slate-400 mt-4 text-lg">Revenue lost per year due to downtime.</p>

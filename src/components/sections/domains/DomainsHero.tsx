@@ -4,7 +4,8 @@ import { motion } from "framer-motion";
 import { DomainSearchBar } from "@/components/shared/DomainSearchBar";
 import { Shield, Zap, Globe, Lock, CheckCircle } from "lucide-react";
 import { TldPricing } from "@/lib/types/whmcs.types";
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
+import { useCurrency } from '@/context/CurrencyContext';
 
 
 interface TLDPricingTableProps {
@@ -15,7 +16,28 @@ interface TLDPricingTableProps {
         code: string;
     };
 }
-export function DomainsHero({ tlds, currency }: TLDPricingTableProps) {
+export function DomainsHero({ tlds: initialTlds, currency: initialCurrency }: TLDPricingTableProps) {
+    const { currencies, selectedCurrency } = useCurrency();
+    const activeCurrency = currencies.find(c => c.code === selectedCurrency);
+
+    const [tlds, setTlds] = useState<TldPricing[]>(initialTlds);
+    const [currency, setCurrency] = useState(initialCurrency);
+
+    useEffect(() => {
+        if (!activeCurrency) return;
+
+        // Skip fetch if it matches initial and we just loaded
+        if (activeCurrency.code === initialCurrency.code && tlds === initialTlds) return;
+
+        fetch(`/api/domains/tlds?currencyId=${activeCurrency.id}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    setTlds(data.tlds);
+                    setCurrency(data.currency);
+                }
+            });
+    }, [activeCurrency?.id]);
 
 
     const popularTlds = useMemo(() => {
@@ -78,7 +100,7 @@ export function DomainsHero({ tlds, currency }: TLDPricingTableProps) {
 
                             {
                                 popularTlds.map((tld, index) => (
-                                    <span key={index} className="hover:text-primary cursor-pointer transition-colors flex items-center gap-2">.{tld.extension} <span className="text-slate-900 font-black">{currency.prefix}{tld.register[1]}</span></span>
+                                    <span key={index} className="hover:text-primary cursor-pointer transition-colors flex items-center gap-2">.{tld.extension} <span className="text-slate-900 font-black">{currency.prefix}{Object.values(tld.register)[0]}</span></span>
                                 ))
                             }
 

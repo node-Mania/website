@@ -3,13 +3,14 @@
 import { motion } from 'framer-motion';
 import { Check, ShieldCheck, Zap } from 'lucide-react';
 import type { CleanProduct } from '@/lib/types/whmcs.types';
+import { useCurrency } from '@/context/CurrencyContext';
+import { resolvePricing } from '@/lib/utils/pricing';
 
 export function NordVPNPricing({ product }: { product: CleanProduct | null }) {
     if (!product) return null;
 
-    const currency = 'USD';
+    const { selectedCurrency: currency } = useCurrency();
     const pricing = product.pricing.find(p => p.currency === currency) ?? product.pricing[0];
-    const prefix = pricing?.prefix ?? '$';
 
     if (!pricing || pricing.cycles.length === 0) return null;
 
@@ -37,15 +38,14 @@ export function NordVPNPricing({ product }: { product: CleanProduct | null }) {
                 <div className="max-w-5xl mx-auto">
                     <div className="grid md:grid-cols-3 gap-8 justify-center">
                         {validCycles.map((cycle, index) => {
+                            const { prefix, displayPrice: perMonth, price: priceTotal } = resolvePricing(product, currency, cycle.cycle);
+
                             const months = cycle.cycle === 'monthly' ? 1
                                 : cycle.cycle === 'annually' ? 12
                                     : cycle.cycle === 'biennially' ? 24
                                         : cycle.cycle === 'triennially' ? 36
                                             : cycle.cycle === 'quarterly' ? 3
                                                 : cycle.cycle === 'semiannually' ? 6 : 1;
-
-                            const priceTotal = parseFloat(cycle.price);
-                            const perMonth = (priceTotal / months).toFixed(2);
 
                             const isPopular = cycle.cycle === 'annually' || cycle.cycle === 'biennially';
 

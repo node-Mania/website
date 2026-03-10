@@ -6,6 +6,8 @@ import { Check, Zap, Activity, Globe, ShieldCheck, Server, Building2, LayoutGrid
 import Link from 'next/link';
 import type { CleanProduct, BillingCycle } from '@/lib/types/whmcs.types';
 import { cn } from '@/lib/utils';
+import { useCurrency } from '@/context/CurrencyContext';
+import { resolvePricing } from '@/lib/utils/pricing';
 
 interface MonitoringPricingProps {
     products: CleanProduct[];
@@ -13,27 +15,15 @@ interface MonitoringPricingProps {
 
 type BillingMode = 'monthly' | 'annually';
 
-function getCycle(product: CleanProduct, cycle: string, currency: string = 'USD'): BillingCycle | undefined {
-    const pricing = product.pricing.find(p => p.currency === currency) ?? product.pricing[0];
-    return pricing?.cycles.find(c => c.cycle === cycle);
-}
-
 function formatPrice(prefix: string, price: string): string {
     const num = parseFloat(price);
     if (isNaN(num)) return 'N/A';
     return `${prefix}${num.toFixed(2)}`;
 }
 
-function PriceCard({ product, billingMode, isPopular }: { product: CleanProduct, billingMode: BillingMode, isPopular?: boolean }) {
-    const currency = 'USD';
-    const pricing = product.pricing.find(p => p.currency === currency) ?? product.pricing[0];
-    const prefix = pricing?.prefix ?? '$';
+function PriceCard({ product, billingMode, currency, isPopular }: { product: CleanProduct, billingMode: BillingMode, currency: string, isPopular?: boolean }) {
+    const { prefix, price: rawPrice, displayPrice, cycle: activeCycle } = resolvePricing(product, currency, billingMode);
 
-    const activeCycle = getCycle(product, billingMode, currency) || getCycle(product, 'monthly', currency);
-    const price = activeCycle?.price ?? '0.00';
-
-    // Calculate display price based on mode
-    const displayPrice = billingMode === 'annually' ? (parseFloat(price) / 12).toFixed(2) : price;
 
     // Plan features based on the names provided or common 360 monitoring features
     const getFeatures = (name: string) => {
@@ -122,13 +112,13 @@ function PriceCard({ product, billingMode, isPopular }: { product: CleanProduct,
                 <h3 className="text-xl font-bold text-slate-900 leading-tight mb-2 tracking-tight">{product.name}</h3>
                 <div className="flex items-end gap-1">
                     <span className="text-3xl font-extrabold text-slate-900 tracking-tight">
-                        {formatPrice(prefix, displayPrice)}
+                        {(rawPrice == '0.00') ? 'Free' : formatPrice(prefix, displayPrice)}
                     </span>
                     <span className="text-slate-500 mb-1 text-sm font-medium">/mo</span>
                 </div>
                 {billingMode === 'annually' && (
-                    <p className="text-[10px] text-green-600 font-bold mt-1 uppercase tracking-tighter">
-                        Billed annually ({formatPrice(prefix, price)})
+                    <p className={cn("text-[10px] text-green-600 font-bold mt-1 uppercase tracking-tighter", rawPrice == '0.00' ? 'hidden' : '')}>
+                        Billed annually ({formatPrice(prefix, rawPrice)})
                     </p>
                 )}
             </div>
@@ -160,6 +150,7 @@ function PriceCard({ product, billingMode, isPopular }: { product: CleanProduct,
 
 export function MonitoringPricing({ products }: MonitoringPricingProps) {
     const [billingMode, setBillingMode] = useState<BillingMode>('annually');
+    const { selectedCurrency: currency } = useCurrency();
     const [activeCategory, setActiveCategory] = useState<'individual' | 'business'>('individual');
 
     // Split based on user mapping: Lite, Personal, Plus, Advance vs pro, business, Enterprise
@@ -268,6 +259,7 @@ export function MonitoringPricing({ products }: MonitoringPricingProps) {
                                 <PriceCard
                                     key={product.pid}
                                     product={product}
+                                    currency={currency}
                                     billingMode={billingMode}
                                     isPopular={product.name.toLowerCase().includes('plus') || product.name.toLowerCase().includes('business')}
                                 />

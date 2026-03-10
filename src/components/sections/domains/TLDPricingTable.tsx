@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
+import { useCurrency } from '@/context/CurrencyContext';
 import { motion, AnimatePresence } from "framer-motion";
 import { TldPricing } from "@/lib/types/whmcs.types";
 import { Button } from "@/components/ui/Button";
@@ -19,7 +20,28 @@ interface TLDPricingTableProps {
 
 const POPULAR_EXTENSIONS = ["com", "net", "org", "co", "info", "me", "biz"];
 
-export function TLDPricingTable({ tlds, currency }: TLDPricingTableProps) {
+export function TLDPricingTable({ tlds: initialTlds, currency: initialCurrency }: TLDPricingTableProps) {
+    const { currencies, selectedCurrency } = useCurrency();
+    const activeCurrency = currencies.find(c => c.code === selectedCurrency);
+
+    const [tlds, setTlds] = useState<TldPricing[]>(initialTlds);
+    const [currency, setCurrency] = useState(initialCurrency);
+
+    useEffect(() => {
+        if (!activeCurrency) return;
+
+        // Skip fetch if it matches initial and we just loaded
+        if (activeCurrency.code === initialCurrency.code && tlds === initialTlds) return;
+
+        fetch(`/api/domains/tlds?currencyId=${activeCurrency.id}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    setTlds(data.tlds);
+                    setCurrency(data.currency);
+                }
+            });
+    }, [activeCurrency?.id]);
     const [searchQuery, setSearchQuery] = useState("");
     const [activeCategory, setActiveCategory] = useState("all");
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -184,19 +206,19 @@ export function TLDPricingTable({ tlds, currency }: TLDPricingTableProps) {
                                             <td className="px-8 py-6">
                                                 <div className="flex flex-col">
                                                     <span className="text-xl font-bold text-slate-900">
-                                                        {currency.prefix}{tld.register["1"] || tld.register["0"]}
+                                                        {currency.prefix}{Object.values(tld.register)[0]}
                                                     </span>
                                                     <span className="text-[10px] font-bold text-slate-400 uppercase">per year</span>
                                                 </div>
                                             </td>
                                             <td className="px-8 py-6">
                                                 <span className="text-slate-600 font-semibold font-sans">
-                                                    {currency.prefix}{tld.transfer["1"] || tld.transfer["0"]}
+                                                    {currency.prefix}{Object.values(tld.transfer)[0]}
                                                 </span>
                                             </td>
                                             <td className="px-8 py-6">
                                                 <span className="text-slate-600 font-semibold font-sans">
-                                                    {currency.prefix}{tld.renew["1"] || tld.renew["0"]}
+                                                    {currency.prefix}{Object.values(tld.renew)[0]}
                                                 </span>
                                             </td>
                                             <td className="px-8 py-6 text-right">
@@ -314,11 +336,11 @@ export function TLDPricingTable({ tlds, currency }: TLDPricingTableProps) {
                                 <div className="grid grid-cols-2 gap-4 pb-4">
                                     <div className="p-4 rounded-xl bg-slate-50 border border-slate-100">
                                         <span className="block text-[10px] font-bold text-slate-400 uppercase mb-1">Price / Year</span>
-                                        <span className="text-xl font-bold text-slate-900">{currency.prefix}{selectedTld.register["1"] || selectedTld.register["0"]}</span>
+                                        <span className="text-xl font-bold text-slate-900">{currency.prefix}{Object.values(selectedTld.register)[0]}</span>
                                     </div>
                                     <div className="p-4 rounded-xl bg-slate-50 border border-slate-100">
                                         <span className="block text-[10px] font-bold text-slate-400 uppercase mb-1">Renewal Price</span>
-                                        <span className="text-xl font-bold text-slate-900">{currency.prefix}{selectedTld.renew["1"] || selectedTld.renew["0"]}</span>
+                                        <span className="text-xl font-bold text-slate-900">{currency.prefix}{Object.values(selectedTld.renew)[0]}</span>
                                     </div>
                                 </div>
 

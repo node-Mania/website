@@ -8,8 +8,36 @@ import { ChevronDown, Globe, Server, Cpu, Shield, Menu, X, Cloud, Lock, Mail, Ac
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { public_routes } from "@/lib/constants/routes";
+import { useCurrency } from '@/context/CurrencyContext';
+import { CurrencySelector } from "./CurrencySelector";
 
-const STATIC_NAV_ITEMS = [
+interface NavItemLink {
+    label: string;
+    href: string;
+    icon?: React.ReactNode;
+    desc?: string;
+    badge?: string;
+}
+
+interface NavColumn {
+    title: string;
+    href?: string;
+    items: NavItemLink[];
+}
+
+interface NavItem {
+    label: string;
+    href: string;
+    mega: boolean;
+    columns?: NavColumn[];
+    promo?: {
+        title: string;
+        desc: string;
+        color: string;
+    };
+}
+
+const STATIC_NAV_ITEMS: NavItem[] = [
 
     {
         label: "Domains",
@@ -67,32 +95,7 @@ const STATIC_NAV_ITEMS = [
             color: "bg-emerald-50"
         }
     },
-    // {
-    //     label: "Servers",
-    //     href: "#",
-    //     mega: true,
-    //     columns: [
-    //         {
-    //             title: "Virtual Servers",
-    //             items: [
-    //                 { label: "Cloud VPS", href: "#", icon: <Cloud className="w-4 h-4 text-cyan-500" />, desc: "Scalable compute power" },
-    //                 { label: "Storage VPS", href: "#", icon: <Database className="w-4 h-4 text-orange-500" />, desc: "Massive storage instances" },
-    //             ]
-    //         },
-    //         {
-    //             title: "Dedicated Power",
-    //             items: [
-    //                 { label: "Dedicated Servers", href: "#", icon: <Server className="w-4 h-4 text-slate-800" />, desc: "Single-tenant metal" },
-    //                 { label: "Bare Metal", href: "#", icon: <Cpu className="w-4 h-4 text-red-600" />, desc: "Raw performance access" },
-    //             ]
-    //         }
-    //     ],
-    //     promo: {
-    //         title: "NVMe Gen5 Speed",
-    //         desc: "All servers powered by the latest enterprise Gen5 storage.",
-    //         color: "bg-orange-50"
-    //     }
-    // },
+
     {
         label: "Security",
         href: "#",
@@ -101,7 +104,7 @@ const STATIC_NAV_ITEMS = [
             {
                 title: "Security",
                 items: [
-                    { label: "SSL Certificates", href: public_routes.SSLMonitoring, icon: <Lock className="w-4 h-4 text-emerald-500" />, desc: "Encryption for users" },
+                    { label: "SSL Certificates", href: public_routes.SSLCertificate, icon: <Lock className="w-4 h-4 text-emerald-500" />, desc: "Encryption for users" },
                     { label: "360 Monitoring", href: public_routes.SiteMonitoring, icon: <Activity className="w-4 h-4 text-blue-500" />, desc: "Real-time site health" },
 
 
@@ -111,7 +114,6 @@ const STATIC_NAV_ITEMS = [
                 title: "Productivity",
                 items: [
                     // { label: "Pro Email", href: "#", icon: <Mail className="w-4 h-4 text-indigo-500" />, desc: "Brandname email" },
-                    // { label: "SocialBee", href: "#", icon: <Signal className="w-4 h-4 text-amber-500" />, desc: "Social automation" },
                     { label: "NordVPN", href: public_routes.NordVPN, icon: <Shield className="w-4 h-4 text-blue-500" />, desc: "Private browsing" },
                     { label: "CodeGuard", href: public_routes.Codeguard, icon: <Cloud className="w-4 h-4 text-sky-500" />, desc: "Daily backups" },
                 ]
@@ -124,35 +126,35 @@ const STATIC_NAV_ITEMS = [
         }
     },
     {
-        label: "Email",
-        href: "#",
+        label: "Email Solution",
+        href: public_routes.BusinessEmail,
         mega: true,
         columns: [
             {
                 title: "Business Email",
+                href: public_routes.BusinessEmail,
                 items: [
-                    { label: "OX App Suite", href: public_routes.OXAppSuite, icon: <Globe className="w-4 h-4 text-blue-600" />, desc: "Perfect for startups & blogs" },
-                    { label: "OX App Suite + Productivity", href: public_routes.OXAppSuitePlusProductivity, icon: <Globe className="w-4 h-4 text-blue-600" />, desc: "Perfect for startups & blogs" },
+                    { label: "OX App Suite", href: public_routes.OXAppSuite, icon: <Mail className="w-4 h-4 text-blue-600" />, desc: "Premium business email & calendar" },
+                    { label: "OX App Suite + Productivity", href: public_routes.OXAppSuitePlusProductivity, icon: <Zap className="w-4 h-4 text-indigo-600" />, desc: "Unified workspace with office apps" },
                 ]
             },
             {
                 title: "Email Services",
                 items: [
-                    { label: "Email Security", href: public_routes.EmailServices, icon: <Globe className="w-4 h-4 text-blue-600" />, desc: "Perfect for startups & blogs" },
+                    { label: "Email Security", href: public_routes.EmailServices, icon: <Shield className="w-4 h-4 text-emerald-600" />, desc: "Advanced spam & threat filtering" },
                 ]
             }
         ],
         promo: {
-            title: "Free Migration",
-            desc: "Expert team will move your site to us for free with zero downtime.",
-            color: "bg-emerald-50"
+            title: "Professional Image",
+            desc: "First impressions matter. Boost your brand authority with business email that works as hard as you do.",
+            color: "bg-indigo-50"
         }
     },
     {
-        label: "Blogs",
-        href: public_routes.Blog,
+        href: public_routes.SocialBee,
+        label: "SocialBee",
         mega: false,
-
     },
 ];
 
@@ -164,8 +166,14 @@ export function Navbar() {
     const [dynamicTlds, setDynamicTlds] = useState<any[]>([]);
     const [currency, setCurrency] = useState({ prefix: "$", suffix: "USD" });
 
+    const { currencies, selectedCurrency } = useCurrency();
+    const activeCurrency = currencies.find(c => c.code === selectedCurrency);
+
     useEffect(() => {
-        fetch("/api/domains/tlds")
+        const currencyId = activeCurrency?.id;
+        const url = `/api/domains/tlds${currencyId ? `?currencyId=${currencyId}` : ""}`;
+
+        fetch(url)
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
@@ -178,7 +186,7 @@ export function Navbar() {
                 }
             })
             .catch(err => console.error("Error fetching TLDs:", err));
-    }, []);
+    }, [activeCurrency?.id]);
 
     const navItems = useMemo(() => {
         return STATIC_NAV_ITEMS.map(item => {
@@ -188,7 +196,7 @@ export function Navbar() {
                         const newItems = dynamicTlds.length > 0 ? dynamicTlds.map(tld => ({
                             label: `.${tld.extension}`,
                             href: "https://my.nodemania.com/cart.php?a=add&domain=register",
-                            desc: `${currency.prefix}${tld.register[1]}/yr`,
+                            desc: `${currency.prefix}${Object.values(tld.register)[0]}/yr`,
                             badge: tld.extension === 'com' ? 'Popular' : tld.extension === 'ai' ? 'Hot' : tld.extension === 'io' ? 'Tech' : undefined
                         })) : col.items;
                         return { ...col, items: newItems };
@@ -273,6 +281,7 @@ export function Navbar() {
                     >
                         Login
                     </Button> */}
+                    <CurrencySelector variant="nav" />
                     <Button variant="primary" size="sm" className="shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all font-bold px-6" onClick={() => window.location.href = "https://my.nodemania.com/clientarea.php"}>Client Area</Button>
                 </div>
 
@@ -323,7 +332,13 @@ export function Navbar() {
                                                     >
                                                         {item.columns?.map((col, idx) => (
                                                             <div key={idx} className="space-y-3">
-                                                                <h4 className="text-[10px] font-bold text-slate-700 uppercase tracking-widest mt-4">{col.title}</h4>
+                                                                {col.href ? (
+                                                                    <Link href={col.href} className="text-[10px] font-bold text-slate-700 uppercase tracking-widest mt-4 hover:text-primary transition-colors">
+                                                                        {col.title}
+                                                                    </Link>
+                                                                ) : (
+                                                                    <h4 className="text-[10px] font-bold text-slate-700 uppercase tracking-widest mt-4">{col.title}</h4>
+                                                                )}
                                                                 <div className="grid gap-4">
                                                                     {col.items.map((link: any, i: number) => (
                                                                         <Link
@@ -362,6 +377,10 @@ export function Navbar() {
 
                             <div className="pt-6 border-t border-slate-100 flex flex-col gap-4">
                                 {/* <Button variant="ghost" className="w-full font-bold text-slate-600 h-12 text-lg">Login</Button> */}
+                                <div className="flex items-center justify-between gap-4">
+                                    <span className="text-sm font-bold text-slate-500">Currency</span>
+                                    <CurrencySelector variant="nav" />
+                                </div>
                                 <Button variant="primary" className="w-full font-bold shadow-lg shadow-primary/20 h-12 text-lg" onClick={() => window.location.href = "https://my.nodemania.com/clientarea.php"}>Client Area</Button>
                             </div>
                         </div>
@@ -384,7 +403,13 @@ export function Navbar() {
                             <div className="col-span-8 grid grid-cols-2 gap-12 border-r border-slate-100 pr-8">
                                 {item.columns?.map((col, idx) => (
                                     <div key={idx} className="space-y-6">
-                                        <h4 className="text-xs font-bold text-slate-900 uppercase tracking-widest">{col.title}</h4>
+                                        {col.href ? (
+                                            <Link href={col.href} className="text-xs font-bold text-slate-900 uppercase tracking-widest hover:text-primary transition-colors">
+                                                {col.title}
+                                            </Link>
+                                        ) : (
+                                            <h4 className="text-xs font-bold text-slate-900 uppercase tracking-widest">{col.title}</h4>
+                                        )}
                                         <ul className="space-y-4">
                                             {col.items.map((link: any, i: number) => (
                                                 <li key={i}>

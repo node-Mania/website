@@ -3,8 +3,11 @@
 import { motion } from 'framer-motion';
 import { Check, Mail, Zap } from 'lucide-react';
 import type { CleanProduct } from '@/lib/types/whmcs.types';
+import { useCurrency } from '@/context/CurrencyContext';
+import { resolvePricing } from '@/lib/utils/pricing';
 
 export function BusinessEmailPricing({ products }: { products: CleanProduct[] }) {
+    const { selectedCurrency: currency } = useCurrency();
     if (!products || products.length === 0) return null;
 
     return (
@@ -28,21 +31,9 @@ export function BusinessEmailPricing({ products }: { products: CleanProduct[] })
                 <div className="max-w-5xl mx-auto">
                     <div className="grid md:grid-cols-2 gap-8 justify-center">
                         {products.map((product, index) => {
-                            const currency = 'USD';
-                            const pricing = product.pricing.find(p => p.currency === currency) ?? product.pricing[0];
-                            const prefix = pricing?.prefix ?? '$';
+                            const { prefix, displayPrice: perMonth, cycle } = resolvePricing(product, currency, 'annually');
 
-                            if (!pricing || pricing.cycles.length === 0) return null;
-
-                            // Take the first available cycle (e.g. Monthly or Annually) as default display
-                            const cycle = pricing.cycles.find(c => parseFloat(c.price) > 0) || pricing.cycles[0];
-                            const months = cycle.cycle === 'monthly' ? 1
-                                : cycle.cycle === 'annually' ? 12
-                                    : cycle.cycle === 'biennially' ? 24
-                                        : 1;
-
-                            const priceTotal = parseFloat(cycle.price);
-                            const perMonth = (priceTotal / months).toFixed(2);
+                            if (!cycle) return null;
 
                             const isPro = product.name.toLowerCase().includes('productivity');
 

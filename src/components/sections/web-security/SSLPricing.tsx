@@ -5,6 +5,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Check, ShieldCheck, Zap, Lock, Globe, Building2, Server } from 'lucide-react';
 import type { CleanProduct, BillingCycle } from '@/lib/types/whmcs.types';
 import { cn } from '@/lib/utils';
+import { useCurrency } from '@/context/CurrencyContext';
+import { resolvePricing } from '@/lib/utils/pricing';
 
 type BillingMode = 'annually' | 'biennially';
 
@@ -14,25 +16,14 @@ interface SSLPricingProps {
     digiCertProducts: CleanProduct[];
 }
 
-function getCycle(product: CleanProduct, cycle: string, currency: string = 'USD'): BillingCycle | undefined {
-    const pricing = product.pricing.find(p => p.currency === currency) ?? product.pricing[0];
-    return pricing?.cycles.find(c => c.cycle === cycle);
-}
-
 function formatPrice(prefix: string, price: string): string {
     const num = parseFloat(price);
     if (isNaN(num)) return 'N/A';
     return `${prefix}${num.toFixed(2)}`;
 }
 
-function PriceCard({ product, billingMode, isPopular }: { product: CleanProduct, billingMode: BillingMode, isPopular?: boolean }) {
-    const currency = 'USD'; // Defaulting to USD for now as per theme
-    const pricing = product.pricing.find(p => p.currency === currency) ?? product.pricing[0];
-    const prefix = pricing?.prefix ?? '$';
-
-    // SSL products often use annual or biennial billing
-    const activeCycle = getCycle(product, billingMode, currency) || getCycle(product, 'annually', currency);
-    const price = activeCycle?.price ?? '0.00';
+function PriceCard({ product, billingMode, currency, isPopular }: { product: CleanProduct, billingMode: BillingMode, currency: string, isPopular?: boolean }) {
+    const { prefix, price, cycle: activeCycle } = resolvePricing(product, currency, billingMode === 'biennially' ? 'biennially' : 'annually');
 
     // Per year equivalent
     const perYearPrice = billingMode === 'biennially' ? (parseFloat(price) / 2).toFixed(2) : price;
@@ -119,6 +110,7 @@ function PriceCard({ product, billingMode, isPopular }: { product: CleanProduct,
 
 export function SSLPricing({ rapidSSLProducts, geoTrustProducts, digiCertProducts }: SSLPricingProps) {
     const [billingMode, setBillingMode] = useState<BillingMode>('annually');
+    const { selectedCurrency: currency } = useCurrency();
     const [activeTab, setActiveTab] = useState<'rapid' | 'geotrust' | 'digicert'>('rapid');
 
     const tabs = [
@@ -214,6 +206,7 @@ export function SSLPricing({ rapidSSLProducts, geoTrustProducts, digiCertProduct
                                 <PriceCard
                                     key={product.pid}
                                     product={product}
+                                    currency={currency}
                                     billingMode={billingMode}
                                     isPopular={index === 1 && activeTab === 'rapid'}
                                 />

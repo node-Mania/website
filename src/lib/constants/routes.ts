@@ -13,9 +13,12 @@ export const public_routes = {
     // Web Security
     WebSecurity: "/web-security",
     SiteMonitoring: "/web-security/site-monitoring",
-    SSLMonitoring: "/web-security/ssl-monitoring",
+    SSLCertificate: "/web-security/ssl-certificate",
     NordVPN: "/web-security/nordvpn",
     Codeguard: "/web-security/codeguard",
+
+    //Social Bee
+    SocialBee: "/social-bee",
 
     //Email Services
     EmailServices: "/email-services",
@@ -32,7 +35,14 @@ export const public_routes = {
 
 
 
+    // Legal
+    LEGAL: "/legal",
+    PrivacyPolicy: "/legal/privacy-policy",
+    TermsAndConditions: "/legal/terms-and-conditions",
 
+    // About
+    ABOUT: "/about",
+    CONTACT: "https://my.nodemania.com/contact.php",
 }
 export const social_links = {
     Facebook: "https://www.facebook.com/nodemania",

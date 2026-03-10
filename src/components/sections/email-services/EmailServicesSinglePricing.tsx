@@ -3,11 +3,12 @@
 import { motion } from 'framer-motion';
 import { Check, ShieldCheck, Zap } from 'lucide-react';
 import type { CleanProduct } from '@/lib/types/whmcs.types';
+import { useCurrency } from '@/context/CurrencyContext';
 
 export default function EmailServicesSinglePricing({ product }: { product: CleanProduct }) {
     if (!product) return null;
 
-    const currency = 'USD';
+    const { selectedCurrency: currency } = useCurrency();
     const pricing = product.pricing.find(p => p.currency === currency) ?? product.pricing[0];
     const prefix = pricing?.prefix ?? '$';
 

@@ -5,6 +5,8 @@ import { useState } from 'react';
 import type { ProductGroup, CleanProduct, BillingCycle } from '@/lib/types/whmcs.types';
 import { cn, convertStringIntoList } from '@/lib/utils';
 import { motion } from 'framer-motion';
+import { useCurrency } from '@/context/CurrencyContext';
+import { resolvePricing } from '@/lib/utils/pricing';
 
 // ─────────────────────────────────────────────
 // Types
@@ -73,12 +75,6 @@ const FALLBACK_GROUP: ProductGroup = {
 // Helpers
 // ─────────────────────────────────────────────
 
-function getCycle(product: CleanProduct, cycle: BillingCycle['cycle'], currencyCode: string): BillingCycle | undefined {
-    const pricing = product.pricing.find(p => p.currency === currencyCode) ?? product.pricing[0];
-    if (!pricing) return undefined;
-    return pricing.cycles.find((c) => c.cycle === cycle);
-}
-
 function formatPrice(prefix: string, price: string): string {
     const num = parseFloat(price);
     if (isNaN(num) || num < 0) return 'N/A';
@@ -106,34 +102,19 @@ interface PriceCardProps {
 }
 
 function PriceCard({ product, billingMode, currency, isPopular }: PriceCardProps) {
-    const pricing = product.pricing.find(p => p.currency === currency) ?? product.pricing[0];
-    const prefix = pricing?.prefix ?? '$';
+    const { prefix, displayPrice: priceValue, cycle: activeCycle } = resolvePricing(product, currency, billingMode);
+    const { price: monthlyPrice } = resolvePricing(product, currency, 'monthly');
+    const { price: annualPrice, cycle: annualCycle } = resolvePricing(product, currency, 'annually');
 
-    const monthlyCycle = getCycle(product, 'monthly', currency);
-    const annualCycle = getCycle(product, 'annually', currency);
-
-    const activeCycle = billingMode === 'monthly' ? monthlyCycle : annualCycle;
-    const activePrice = activeCycle?.price ?? null;
-
-    const monthlyEquivalent =
-        billingMode === 'annually' && annualCycle
-            ? (parseFloat(annualCycle.price) / 12).toFixed(2)
-            : null;
-
+    // Old price (monthly × 12) shown crossed out in annual mode
     const oldAnnualPrice =
-        billingMode === 'annually' && monthlyCycle
-            ? (parseFloat(monthlyCycle.price) * 12).toFixed(2)
+        billingMode === 'annually'
+            ? (parseFloat(monthlyPrice) * 12).toFixed(2)
             : "0";
 
-    const discountPct =
-        billingMode === 'annually' && monthlyCycle && annualCycle
-            ? calcDiscount(monthlyCycle.price, annualCycle.price)
-            : 0;
+    const discountPct = calcDiscount(monthlyPrice, annualPrice);
 
-    const displayPrice =
-        billingMode === 'monthly'
-            ? (activePrice ? formatPrice(prefix, activePrice) : 'N/A')
-            : (monthlyEquivalent ? formatPrice(prefix, monthlyEquivalent) : 'N/A');
+    const displayPrice = formatPrice(prefix, priceValue);
 
     return (
         <motion.div
@@ -218,7 +199,7 @@ function PriceCard({ product, billingMode, currency, isPopular }: PriceCardProps
 
 export function WordPressHostingPricing({ productGroup }: WordPressHostingPricingProps) {
     const [billingMode, setBillingMode] = useState<BillingMode>('annually');
-    const [currency, setCurrency] = useState<string>('USD');
+    const { selectedCurrency: currency } = useCurrency();
 
     const group = productGroup || FALLBACK_GROUP;
     const popularIndex = Math.floor((group.products.length) / 2);

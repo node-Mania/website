@@ -3,7 +3,11 @@ import { getTldPricing } from "@/lib/services/whmcs.service";
 
 export async function GET(request: NextRequest) {
     try {
-        const tldData = await getTldPricing();
+        const searchParams = request.nextUrl.searchParams;
+        const curIdStr = searchParams.get("currencyId");
+        const currencyId = curIdStr ? parseInt(curIdStr) : undefined;
+
+        const tldData = await getTldPricing(currencyId);
         return NextResponse.json(
             { success: true, ...tldData },
             {

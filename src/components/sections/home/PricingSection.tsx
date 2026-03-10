@@ -4,6 +4,9 @@ import { Check, Zap, Globe } from 'lucide-react';
 import { useState, useMemo, useEffect } from 'react';
 import type { ProductGroup, CleanProduct, BillingCycle } from '@/lib/types/whmcs.types';
 import { cn, convertStringIntoList } from '@/lib/utils';
+import { motion } from 'framer-motion';
+import { useCurrency } from '@/context/CurrencyContext';
+import { resolvePricing } from '@/lib/utils/pricing';
 
 // ─────────────────────────────────────────────
 // Types
@@ -18,15 +21,6 @@ interface PricingSectionProps {
 // ─────────────────────────────────────────────
 // Helpers
 // ─────────────────────────────────────────────
-
-/** Extract a billing cycle from a product's pricing based on currency */
-function getCycle(product: CleanProduct, cycle: BillingCycle['cycle'], currencyCode: string): BillingCycle | undefined {
-    // Try to find the specific currency, otherwise fallback to the first one available
-    const pricing = product.pricing.find(p => p.currency === currencyCode) ?? product.pricing[0];
-
-    if (!pricing) return undefined;
-    return pricing.cycles.find((c) => c.cycle === cycle);
-}
 
 /** Format a price string like "2.99" → "$2.99" */
 function formatPrice(prefix: string, price: string): string {
@@ -132,38 +126,20 @@ interface PriceCardProps {
     isPopular?: boolean;
 }
 
-function PriceCard({ product, billingMode, currency, isPopular }: PriceCardProps) {
-    const pricing = product.pricing.find(p => p.currency === currency) ?? product.pricing[0];
-    const prefix = pricing?.prefix ?? '$';
+function PriceCard({ product, billingMode, currency: selectedCurrency, isPopular }: PriceCardProps) {
+    const { prefix, displayPrice: priceText, price: rawPrice, cycle: activeCycle } = resolvePricing(product, selectedCurrency, billingMode);
+    const { price: monthlyPrice } = resolvePricing(product, selectedCurrency, 'monthly');
+    const { price: annualPrice, cycle: annualCycle } = resolvePricing(product, selectedCurrency, 'annually');
 
-    const monthlyCycle = getCycle(product, 'monthly', currency);
-    const annualCycle = getCycle(product, 'annually', currency);
-
-    const activeCycle = billingMode === 'monthly' ? monthlyCycle : annualCycle;
-    const activePrice = activeCycle?.price ?? null;
-
-    // For annual: show monthly equivalent (annual / 12)
-    const monthlyEquivalent =
-        billingMode === 'annually' && annualCycle
-            ? (parseFloat(annualCycle.price) / 12).toFixed(2)
-            : null;
+    const discountPct = calcDiscount(monthlyPrice, annualPrice);
 
     // Old price (monthly × 12) shown crossed out in annual mode
     const oldAnnualPrice =
-        billingMode === 'annually' && monthlyCycle
-            ? (parseFloat(monthlyCycle.price) * 12).toFixed(2)
+        billingMode === 'annually'
+            ? (parseFloat(monthlyPrice) * 12).toFixed(2)
             : "0";
 
-    // Discount %
-    const discountPct =
-        billingMode === 'annually' && monthlyCycle && annualCycle
-            ? calcDiscount(monthlyCycle.price, annualCycle.price)
-            : 0;
-
-    const displayPrice =
-        billingMode === 'monthly'
-            ? (activePrice ? formatPrice(prefix, activePrice) : 'N/A')
-            : (monthlyEquivalent ? formatPrice(prefix, monthlyEquivalent) : 'N/A');
+    const displayPrice = formatPrice(prefix, priceText);
 
     return (
         <div
@@ -259,10 +235,7 @@ export function PricingSection({ productGroups }: PricingSectionProps) {
     const [activeGid, setActiveGid] = useState<number>(groups[0]?.gid ?? 0);
     const [billingMode, setBillingMode] = useState<BillingMode>('annually');
 
-    // Extract available currencies from the first product of the groups to keep UI consistent
-
-
-    const [currency, setCurrency] = useState<string>('USD');
+    const { selectedCurrency: currency } = useCurrency();
 
 
 
