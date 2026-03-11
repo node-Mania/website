@@ -7,6 +7,8 @@ interface CurrencyContextType {
     currencies: WhmcsCurrency[];
     selectedCurrency: string;
     setCurrency: (code: string) => void;
+    selectedCurrencyId: number;
+    setCurrencyId: (id: number) => void;
     isLoading: boolean;
 }
 
@@ -21,17 +23,24 @@ export function CurrencyProvider({
 }) {
     const [currencies, setCurrencies] = useState<WhmcsCurrency[]>(initialCurrencies);
     const [selectedCurrency, setSelectedCurrency] = useState<string>('USD');
+    const [selectedCurrencyId, setSelectedCurrencyId] = useState<number>(1);
     const [isLoading, setIsLoading] = useState(initialCurrencies.length === 0);
 
     // Load from localStorage on mount
     useEffect(() => {
-        const stored = localStorage.getItem('node_mania_currency');
-        if (stored) {
-            setSelectedCurrency(stored);
-        } else if (initialCurrencies.length > 0) {
+        const stored_currency = localStorage.getItem('node_mania_currency');
+        const stored_currency_id = localStorage.getItem('node_mania_currency_id');
+        if (stored_currency) {
+            setSelectedCurrency(stored_currency);
+        }
+        if (stored_currency_id) {
+            setSelectedCurrencyId(parseInt(stored_currency_id));
+        }
+        else if (initialCurrencies.length > 0) {
             const defaultCurr = initialCurrencies.find(c => c.default) || initialCurrencies[0];
             if (defaultCurr) {
                 setSelectedCurrency(defaultCurr.code);
+                setSelectedCurrencyId(defaultCurr.id);
             }
         }
     }, [initialCurrencies]);
@@ -47,7 +56,7 @@ export function CurrencyProvider({
                         setCurrencies(data.currencies);
                         if (!localStorage.getItem('node_mania_currency')) {
                             const defaultCurr = data.currencies.find((c: WhmcsCurrency) => c.default) || data.currencies[0];
-                            if (defaultCurr) setSelectedCurrency(defaultCurr.code);
+                            if (defaultCurr) setSelectedCurrency(defaultCurr.code); setSelectedCurrencyId(defaultCurr.id);
                         }
                     }
                 } catch (error) {
@@ -65,8 +74,13 @@ export function CurrencyProvider({
         localStorage.setItem('node_mania_currency', code);
     };
 
+    const setCurrencyId = (id: number) => {
+        setSelectedCurrencyId(id);
+        localStorage.setItem('node_mania_currency_id', id.toString());
+    };
+
     return (
-        <CurrencyContext.Provider value={{ currencies, selectedCurrency, setCurrency, isLoading }}>
+        <CurrencyContext.Provider value={{ currencies, selectedCurrency, setCurrency, selectedCurrencyId, setCurrencyId, isLoading }}>
             {children}
         </CurrencyContext.Provider>
     );

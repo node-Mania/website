@@ -3,6 +3,8 @@ import { notFound } from 'next/navigation';
 import { getProductsByPids } from '@/lib/services/whmcs.service';
 import { SocialBeeHero } from '@/components/sections/web-security/social-bee/SocialBeeHero';
 import { Check, ArrowRight, Signal } from 'lucide-react';
+import { OrderButton } from '@/components/ui/OrderButton';
+
 
 interface SinglePlanPageProps {
     params: Promise<{ slug: string }>;
@@ -97,13 +99,14 @@ export default async function SocialBeePlanPage({ params }: SinglePlanPageProps)
                         </div>
 
                         <div className="flex flex-wrap gap-4">
-                            <a
-                                href={product.productUrl || '#'}
+                            <OrderButton
+                                product={product}
+                                billingMode={annualPricing ? 'annually' : 'monthly'}
                                 className="px-10 py-4 bg-amber-500 hover:bg-amber-600 text-white rounded-xl font-bold shadow-xl shadow-amber-600/25 transition-all hover:-translate-y-1 flex items-center gap-2"
                             >
                                 Buy {product.name} Now
                                 <ArrowRight className="w-5 h-5" />
-                            </a>
+                            </OrderButton>
                             <a
                                 href="/web-security/social-bee"
                                 className="px-10 py-4 bg-white border border-slate-200 text-slate-900 rounded-xl font-bold transition-all hover:-translate-y-1"
@@ -145,13 +148,14 @@ export default async function SocialBeePlanPage({ params }: SinglePlanPageProps)
                                     </div>
                                 </div>
 
-                                <a
-                                    href={product.productUrl || '#'}
+                                <OrderButton
+                                    product={product}
+                                    billingMode={annualPricing ? 'annually' : 'monthly'}
                                     className="w-full py-5 bg-slate-900 hover:bg-slate-800 text-white rounded-2xl font-bold transition-all flex items-center justify-center gap-3 text-lg"
                                 >
                                     Purchase this Plan
                                     <Signal className="w-5 h-5" />
-                                </a>
+                                </OrderButton>
                                 <p className="mt-6 text-xs text-slate-400 font-medium italic">
                                     *Prices exclusive of applicable taxes. 30-day money back guarantee applies.
                                 </p>

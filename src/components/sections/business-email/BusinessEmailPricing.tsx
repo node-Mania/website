@@ -5,9 +5,10 @@ import { Check, Mail, Zap } from 'lucide-react';
 import type { CleanProduct } from '@/lib/types/whmcs.types';
 import { useCurrency } from '@/context/CurrencyContext';
 import { resolvePricing } from '@/lib/utils/pricing';
+import { resolveProductUrl } from '@/lib/utils';
 
 export function BusinessEmailPricing({ products }: { products: CleanProduct[] }) {
-    const { selectedCurrency: currency } = useCurrency();
+    const { selectedCurrency: currency, selectedCurrencyId } = useCurrency();
     if (!products || products.length === 0) return null;
 
     return (
@@ -31,7 +32,7 @@ export function BusinessEmailPricing({ products }: { products: CleanProduct[] })
                 <div className="max-w-5xl mx-auto">
                     <div className="grid md:grid-cols-2 gap-8 justify-center">
                         {products.map((product, index) => {
-                            const { prefix, displayPrice: perMonth, cycle } = resolvePricing(product, currency, 'annually');
+                            const { prefix, displayPrice: perMonth, cycle, } = resolvePricing(product, currency, 'monthly');
 
                             if (!cycle) return null;
 
@@ -72,11 +73,11 @@ export function BusinessEmailPricing({ products }: { products: CleanProduct[] })
                                             </span>
                                             <span className="text-slate-500 mb-1.5 text-sm font-medium">/mo</span>
                                         </div>
-                                        {months > 1 && (
+                                        {/* {false && (
                                             <p className="text-xs text-green-600 font-semibold bg-green-50 rounded-lg p-2 inline-block border border-green-100">
                                                 Billed {cycle.cycle}
                                             </p>
-                                        )}
+                                        )} */}
                                     </div>
 
                                     <ul className="space-y-4 mb-8 flex-grow">
@@ -98,7 +99,7 @@ export function BusinessEmailPricing({ products }: { products: CleanProduct[] })
                                     </ul>
 
                                     <a
-                                        href={`${product.productUrl}`}
+                                        href={resolveProductUrl(product, selectedCurrencyId, 'monthly')}
                                         className={`w-full py-4 px-6 rounded-2xl font-bold text-sm transition-all text-center flex items-center justify-center gap-2 ${isPro
                                             ? "bg-primary text-white hover:bg-primary-600 shadow-lg shadow-primary/20"
                                             : "bg-slate-900 text-white hover:bg-slate-800"

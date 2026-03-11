@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Check, Signal, LayoutGrid, Users } from 'lucide-react';
 import type { CleanProduct, BillingCycle } from '@/lib/types/whmcs.types';
-import { cn } from '@/lib/utils';
+import { cn, resolveProductUrl } from '@/lib/utils';
 import { useCurrency } from '@/context/CurrencyContext';
 import { resolvePricing } from '@/lib/utils/pricing';
 
@@ -21,7 +21,9 @@ function formatPrice(prefix: string, price: string): string {
 }
 
 function PriceCard({ product, billingMode, currency, isPopular }: { product: CleanProduct, billingMode: BillingMode, currency: string, isPopular?: boolean }) {
+    const { selectedCurrencyId } = useCurrency();
     const { prefix, displayPrice: priceValue, price: rawPrice } = resolvePricing(product, currency, billingMode);
+    const productUrl = resolveProductUrl(product, selectedCurrencyId, billingMode);
 
     const price = hideDecimals(priceValue);
 
@@ -89,7 +91,7 @@ function PriceCard({ product, billingMode, currency, isPopular }: { product: Cle
 
             <div className="space-y-3">
                 <a
-                    href={product.productUrl || '#'}
+                    href={productUrl}
                     className={cn(
                         "w-full py-3 px-6 rounded-xl font-bold text-sm transition-all text-center flex items-center justify-center gap-2",
                         isPopular

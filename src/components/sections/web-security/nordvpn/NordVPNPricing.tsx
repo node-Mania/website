@@ -5,11 +5,12 @@ import { Check, ShieldCheck, Zap } from 'lucide-react';
 import type { CleanProduct } from '@/lib/types/whmcs.types';
 import { useCurrency } from '@/context/CurrencyContext';
 import { resolvePricing } from '@/lib/utils/pricing';
+import { resolveProductUrl } from '@/lib/utils';
 
 export function NordVPNPricing({ product }: { product: CleanProduct | null }) {
     if (!product) return null;
 
-    const { selectedCurrency: currency } = useCurrency();
+    const { selectedCurrency: currency, selectedCurrencyId } = useCurrency();
     const pricing = product.pricing.find(p => p.currency === currency) ?? product.pricing[0];
 
     if (!pricing || pricing.cycles.length === 0) return null;
@@ -102,7 +103,7 @@ export function NordVPNPricing({ product }: { product: CleanProduct | null }) {
                                     </ul>
 
                                     <a
-                                        href={`${product.productUrl}&billingcycle=${cycle.cycle}`}
+                                        href={resolveProductUrl(product, selectedCurrencyId, cycle.cycle)}
                                         className={`w-full py-4 px-6 rounded-2xl font-bold text-sm transition-all text-center flex items-center justify-center gap-2 ${isPopular
                                             ? "bg-primary text-white hover:bg-primary-500 shadow-lg shadow-primary/20"
                                             : "bg-slate-900 text-white hover:bg-slate-800"

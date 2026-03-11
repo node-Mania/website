@@ -5,6 +5,7 @@ import { ShieldCheck, Server, AlertCircle } from 'lucide-react';
 import type { CleanProduct } from '@/lib/types/whmcs.types';
 import { useCurrency } from '@/context/CurrencyContext';
 import { resolvePricing } from '@/lib/utils/pricing';
+import { resolveProductUrl } from '@/lib/utils';
 
 export default function EmailServicesPricing({ products }: { products: CleanProduct[] }) {
     if (!products || products.length === 0) {
@@ -17,7 +18,7 @@ export default function EmailServicesPricing({ products }: { products: CleanProd
     }
 
     // Attempt to parse out currency/cycle formatting
-    const { selectedCurrency: currency } = useCurrency();
+    const { selectedCurrency: currency, selectedCurrencyId } = useCurrency();
 
     return (
         <section id="pricing" className="py-24 bg-slate-50 border-t border-b border-slate-100">
@@ -40,6 +41,7 @@ export default function EmailServicesPricing({ products }: { products: CleanProd
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
                     {products.map((product, index) => {
                         const { prefix, displayPrice: priceDisplay, cycle } = resolvePricing(product, currency, 'monthly');
+                        const productUrl = resolveProductUrl(product, selectedCurrencyId, 'monthly');
 
                         let subText = '';
                         if (cycle) {
@@ -83,7 +85,7 @@ export default function EmailServicesPricing({ products }: { products: CleanProd
                                 </div>
 
                                 <a
-                                    href={product.productUrl}
+                                    href={productUrl}
                                     className={`w-full py-4 px-6 rounded-2xl font-bold text-sm transition-all text-center flex items-center justify-center gap-2 ${isBundle
                                         ? "bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-500/25"
                                         : "bg-slate-900 text-white hover:bg-slate-800"

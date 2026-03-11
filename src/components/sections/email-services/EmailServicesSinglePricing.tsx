@@ -4,11 +4,12 @@ import { motion } from 'framer-motion';
 import { Check, ShieldCheck, Zap } from 'lucide-react';
 import type { CleanProduct } from '@/lib/types/whmcs.types';
 import { useCurrency } from '@/context/CurrencyContext';
+import { resolveProductUrl } from '@/lib/utils';
 
 export default function EmailServicesSinglePricing({ product }: { product: CleanProduct }) {
     if (!product) return null;
 
-    const { selectedCurrency: currency } = useCurrency();
+    const { selectedCurrency: currency, selectedCurrencyId } = useCurrency();
     const pricing = product.pricing.find(p => p.currency === currency) ?? product.pricing[0];
     const prefix = pricing?.prefix ?? '$';
 
@@ -99,7 +100,7 @@ export default function EmailServicesSinglePricing({ product }: { product: Clean
                                     </ul>
 
                                     <a
-                                        href={`${product.productUrl}&billingcycle=${cycle.cycle}`}
+                                        href={resolveProductUrl(product, selectedCurrencyId, cycle.cycle)}
                                         className={`w-full py-4 px-6 rounded-2xl font-bold text-sm transition-all text-center flex items-center justify-center gap-2 ${isPopular
                                             ? "bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-500/20"
                                             : "bg-slate-900 text-white hover:bg-slate-800"

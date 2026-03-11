@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Check, ShieldCheck, Zap, Lock, Globe, Building2, Server } from 'lucide-react';
 import type { CleanProduct, BillingCycle } from '@/lib/types/whmcs.types';
-import { cn } from '@/lib/utils';
+import { cn, resolveProductUrl } from '@/lib/utils';
 import { useCurrency } from '@/context/CurrencyContext';
 import { resolvePricing } from '@/lib/utils/pricing';
 
@@ -23,7 +23,9 @@ function formatPrice(prefix: string, price: string): string {
 }
 
 function PriceCard({ product, billingMode, currency, isPopular }: { product: CleanProduct, billingMode: BillingMode, currency: string, isPopular?: boolean }) {
+    const { selectedCurrencyId } = useCurrency();
     const { prefix, price, cycle: activeCycle } = resolvePricing(product, currency, billingMode === 'biennially' ? 'biennially' : 'annually');
+    const productUrl = resolveProductUrl(product, selectedCurrencyId, billingMode === 'biennially' ? 'biennially' : 'annually');
 
     // Per year equivalent
     const perYearPrice = billingMode === 'biennially' ? (parseFloat(price) / 2).toFixed(2) : price;
@@ -93,7 +95,7 @@ function PriceCard({ product, billingMode, currency, isPopular }: { product: Cle
             </ul>
 
             <a
-                href={product.productUrl || '#'}
+                href={productUrl}
                 className={cn(
                     "w-full py-4 px-6 rounded-2xl font-bold text-sm transition-all text-center flex items-center justify-center gap-2",
                     isPopular

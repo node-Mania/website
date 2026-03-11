@@ -3,7 +3,7 @@
 import { Check, Zap } from 'lucide-react';
 import { useState } from 'react';
 import type { ProductGroup, CleanProduct, BillingCycle } from '@/lib/types/whmcs.types';
-import { cn, convertStringIntoList } from '@/lib/utils';
+import { cn, convertStringIntoList, resolveProductUrl } from '@/lib/utils';
 import { motion } from 'framer-motion';
 import { useCurrency } from '@/context/CurrencyContext';
 import { resolvePricing } from '@/lib/utils/pricing';
@@ -102,7 +102,9 @@ interface PriceCardProps {
 }
 
 function PriceCard({ product, billingMode, currency, isPopular }: PriceCardProps) {
+    const { selectedCurrencyId } = useCurrency();
     const { prefix, displayPrice: priceValue, cycle: activeCycle } = resolvePricing(product, currency, billingMode);
+    const productUrl = resolveProductUrl(product, selectedCurrencyId, billingMode);
     const { price: monthlyPrice } = resolvePricing(product, currency, 'monthly');
     const { price: annualPrice, cycle: annualCycle } = resolvePricing(product, currency, 'annually');
 
@@ -167,7 +169,7 @@ function PriceCard({ product, billingMode, currency, isPopular }: PriceCardProps
             </div>
 
             <a
-                href={product.productUrl || '#'}
+                href={productUrl}
                 className={`w-full text-center px-6 py-3.5 rounded-xl font-bold text-sm transition-all duration-200 mb-8 block ${isPopular
                     ? 'bg-primary text-white hover:bg-primary-700 shadow-md hover:shadow-lg hover:shadow-primary/25'
                     : 'bg-slate-900 text-white hover:bg-slate-800 shadow-md'

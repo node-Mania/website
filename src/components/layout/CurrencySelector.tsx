@@ -12,7 +12,7 @@ interface CurrencySelectorProps {
 }
 
 export function CurrencySelector({ className, variant = 'nav' }: CurrencySelectorProps) {
-    const { currencies, selectedCurrency, setCurrency, isLoading } = useCurrency();
+    const { currencies, selectedCurrency, setCurrency, isLoading, setCurrencyId } = useCurrency();
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -67,6 +67,7 @@ export function CurrencySelector({ className, variant = 'nav' }: CurrencySelecto
                                     key={curr.code}
                                     onClick={() => {
                                         setCurrency(curr.code);
+                                        setCurrencyId(curr.id);
                                         setIsOpen(false);
                                     }}
                                     className={cn(

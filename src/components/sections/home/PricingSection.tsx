@@ -3,7 +3,7 @@
 import { Check, Zap, Globe } from 'lucide-react';
 import { useState, useMemo, useEffect } from 'react';
 import type { ProductGroup, CleanProduct, BillingCycle } from '@/lib/types/whmcs.types';
-import { cn, convertStringIntoList } from '@/lib/utils';
+import { cn, convertStringIntoList, resolveProductUrl } from '@/lib/utils';
 import { motion } from 'framer-motion';
 import { useCurrency } from '@/context/CurrencyContext';
 import { resolvePricing } from '@/lib/utils/pricing';
@@ -127,7 +127,9 @@ interface PriceCardProps {
 }
 
 function PriceCard({ product, billingMode, currency: selectedCurrency, isPopular }: PriceCardProps) {
+    const { selectedCurrencyId } = useCurrency();
     const { prefix, displayPrice: priceText, price: rawPrice, cycle: activeCycle } = resolvePricing(product, selectedCurrency, billingMode);
+    const productUrl = resolveProductUrl(product, selectedCurrencyId, billingMode);
     const { price: monthlyPrice } = resolvePricing(product, selectedCurrency, 'monthly');
     const { price: annualPrice, cycle: annualCycle } = resolvePricing(product, selectedCurrency, 'annually');
 
@@ -203,7 +205,7 @@ function PriceCard({ product, billingMode, currency: selectedCurrency, isPopular
 
             {/* CTA Button */}
             <a
-                href={product.productUrl || '#'}
+                href={productUrl}
                 className={`w-full text-center px-6 py-3 rounded-xl font-semibold text-sm transition-all duration-200 mb-8 block ${isPopular
                     ? 'bg-primary text-white hover:bg-primary/80 shadow-md hover:shadow-lg hover:shadow-primary/25'
                     : 'border border-slate-300 text-slate-700 hover:bg-slate-50 hover:border-primary/50'
