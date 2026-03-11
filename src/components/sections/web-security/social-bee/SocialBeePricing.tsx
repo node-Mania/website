@@ -103,7 +103,7 @@ function PriceCard({ product, billingMode, currency, isPopular }: { product: Cle
                     <Signal className="w-4 h-4" />
                 </a>
                 <a
-                    href={`/web-security/social-bee/${product.name.toLowerCase().replace(/\s+/g, '-')}`}
+                    href={`/social-bee/${product.name.toLowerCase().replace(/\s+/g, '-')}`}
                     className="w-full py-2.5 px-6 rounded-xl font-bold text-xs text-slate-500 hover:text-slate-900 transition-all text-center flex items-center justify-center"
                 >
                     View Plan Details

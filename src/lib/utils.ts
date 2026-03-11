@@ -29,7 +29,6 @@ export function resolveProductUrl(
   url.searchParams.set('currency', selectedCurrencyId.toString());
   url.searchParams.set('billingcycle', billingMode);
 
-  console.log(url);
   return url.toString();
 }
 

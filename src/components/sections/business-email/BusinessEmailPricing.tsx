@@ -108,6 +108,13 @@ export function BusinessEmailPricing({ products }: { products: CleanProduct[] })
                                         Get Started
                                         <Zap className="w-4 h-4" />
                                     </a>
+
+                                    <a
+                                        href={`business-email/${product.name.toLowerCase().replace(/[\s\+]+/g, '-')}`}
+                                        className="w-full py-2.5 px-6 rounded-xl font-bold text-xs text-slate-500 hover:text-slate-900 transition-all text-center flex items-center justify-center"
+                                    >
+                                        View Plan Details
+                                    </a>
                                 </motion.div>
                             );
                         })}
