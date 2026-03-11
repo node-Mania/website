@@ -63,7 +63,7 @@ export function WebHostingHero({ productGroup }: { productGroup?: ProductGroup |
                             </h1>
 
                             <p className="text-xl text-slate-600 mb-8 max-w-xl leading-relaxed">
-                                Blazing-Fast, Reliable & Secure Web Hosting {displayPrice && (
+                                Blazing-Fast, Reliable & Secure Web Hosting {displayPrice && startingPrice && (
                                     <>
                                         starting from <span className="font-bold text-slate-900">{startingPrice.prefix}{displayPrice}/mo</span>.
                                     </>
