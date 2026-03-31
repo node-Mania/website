@@ -9,11 +9,11 @@ import type { ProductGroup } from "@/lib/types/whmcs.types";
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'High-Performance Cloud Hosting for Everyone | nodeMaina',
-  description: 'Experience lightning-fast speeds, 99.9% uptime, and 24/7 expert support. Whether you\'re starting a blog or running an enterprise, nodeMaina scales with you.',
+  title: 'High-Performance Cloud Hosting & Domains | nodeMaina',
+  description: 'Affordable high-performance cloud hosting, WordPress hosting, and domain registrations at nodeMania. Enjoy 99.9% uptime, LiteSpeed servers, and 24/7 expert support.',
   openGraph: {
-    title: 'High-Performance Cloud Hosting for Everyone | nodeMaina',
-    description: 'Experience lightning-fast speeds, 99.9% uptime, and 24/7 expert support.',
+    title: 'High-Performance Cloud Hosting & Domains | nodeMaina',
+    description: 'Affordable high-performance cloud hosting, WordPress hosting, and domain registrations at nodeMania. Enjoy 99.9% uptime, LiteSpeed servers, and 24/7 expert support.',
     type: 'website',
   },
 };
