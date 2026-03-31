@@ -33,6 +33,9 @@ export async function generateMetadata({
     }
 
     const seo = post.seo;
+    seo.canonical = `${SITE_URL}/blog/${slug}`;
+    seo.opengraphUrl = `${SITE_URL}/blog/${slug}`;
+
 
     return {
         title: seo?.title || `${post.title} | Blog`,

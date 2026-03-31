@@ -47,7 +47,7 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
         notFound();
     }
 
-    const postsData = await getPosts(12, null, slug);
+    const postsData = await getPosts(9, null, slug);
 
     return (
         <main className="min-h-screen bg-[#f7fbff] font-sans overflow-x-hidden">

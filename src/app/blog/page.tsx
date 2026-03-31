@@ -32,7 +32,7 @@ export default async function BlogPage() {
 
     try {
         const [postsData, featured, cats] = await Promise.all([
-            getPosts(12),
+            getPosts(9),
             getLatestPosts(3),
             getCategories(),
         ]);
