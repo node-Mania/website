@@ -1,12 +1,11 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { DomainSearchBar } from "@/components/shared/DomainSearchBar";
-import { Shield, Zap, Globe, Lock, CheckCircle } from "lucide-react";
+import { DomainAvailabilitySearch } from "@/components/sections/domains/DomainAvailabilitySearch";
+import { Globe, CheckCircle } from "lucide-react";
 import { TldPricing } from "@/lib/types/whmcs.types";
 import { useMemo, useState, useEffect } from "react";
 import { useCurrency } from '@/context/CurrencyContext';
-
 
 interface TLDPricingTableProps {
     tlds: TldPricing[];
@@ -39,18 +38,13 @@ export function DomainsHero({ tlds: initialTlds, currency: initialCurrency }: TL
             });
     }, [activeCurrency?.id]);
 
-
     const popularTlds = useMemo(() => {
-
         const targetExtensions = ['com', 'net', 'io', 'ai'];
         const filteredDomains = tlds.filter((item) =>
             targetExtensions.includes(item.extension)
         );
-
         return filteredDomains;
-
     }, [tlds]);
-
 
     return (
         <section className="relative pt-32 pb-20 overflow-hidden bg-white border-b border-slate-200">
@@ -88,7 +82,7 @@ export function DomainsHero({ tlds: initialTlds, currency: initialCurrency }: TL
                         Start your journey with the perfect address. Secure your brand identity today with our competitive hosting-integrated domain registration.
                     </motion.p>
 
-                    <DomainSearchBar variant="hero" />
+                    <DomainAvailabilitySearch tlds={tlds} currency={currency} />
 
                     <motion.div
                         initial={{ opacity: 0 }}
@@ -97,13 +91,11 @@ export function DomainsHero({ tlds: initialTlds, currency: initialCurrency }: TL
                         className="mt-8 flex flex-wrap justify-center gap-8 text-sm font-bold text-slate-400 uppercase tracking-widest"
                     >
                         <div className="flex gap-8">
-
                             {
                                 popularTlds.map((tld, index) => (
                                     <span key={index} className="hover:text-primary cursor-pointer transition-colors flex items-center gap-2">.{tld.extension} <span className="text-slate-900 font-black">{currency.prefix}{Object.values(tld.register)[0]}</span></span>
                                 ))
                             }
-
                         </div>
                     </motion.div>
 
