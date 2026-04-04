@@ -28,20 +28,58 @@ export function CurrencyProvider({
 
     // Load from localStorage on mount
     useEffect(() => {
+        let currencyParam = '';
+        if (typeof window !== 'undefined') {
+            const params = new URLSearchParams(window.location.search);
+            currencyParam = params.get('currency')?.toUpperCase() || '';
+        }
+
         const stored_currency = localStorage.getItem('node_mania_currency');
         const stored_currency_id = localStorage.getItem('node_mania_currency_id');
-        if (stored_currency) {
-            setSelectedCurrency(stored_currency);
-        }
-        if (stored_currency_id) {
-            setSelectedCurrencyId(parseInt(stored_currency_id));
-        }
-        else if (initialCurrencies.length > 0) {
-            const defaultCurr = initialCurrencies.find(c => c.default) || initialCurrencies[0];
-            if (defaultCurr) {
-                setSelectedCurrency(defaultCurr.code);
-                setSelectedCurrencyId(defaultCurr.id);
+
+        if (currencyParam && initialCurrencies.some(c => c.code.toUpperCase() === currencyParam)) {
+            const currObj = initialCurrencies.find(c => c.code.toUpperCase() === currencyParam);
+            if (currObj) {
+                setSelectedCurrency(currObj.code);
+                setSelectedCurrencyId(currObj.id);
+                localStorage.setItem('node_mania_currency', currObj.code);
+                localStorage.setItem('node_mania_currency_id', currObj.id.toString());
             }
+        } else if (stored_currency) {
+            setSelectedCurrency(stored_currency);
+            if (stored_currency_id) {
+                setSelectedCurrencyId(parseInt(stored_currency_id));
+            }
+        } else if (initialCurrencies.length > 0) {
+            // Need geolocation
+            const fetchGeoCurrency = async () => {
+                try {
+                    const req = await fetch('https://ipapi.co/currency/');
+                    if (req.ok) {
+                        const geoCurrency = (await req.text()).trim().toUpperCase();
+                        const currObj = initialCurrencies.find(c => c.code.toUpperCase() === geoCurrency);
+                        if (currObj) {
+                            setSelectedCurrency(currObj.code);
+                            setSelectedCurrencyId(currObj.id);
+                            localStorage.setItem('node_mania_currency', currObj.code);
+                            localStorage.setItem('node_mania_currency_id', currObj.id.toString());
+                            return;
+                        }
+                    }
+                } catch (e) {
+                    console.error('Failed to fetch geo currency:', e);
+                }
+                
+                // Fallback to USD or default
+                const defaultCurr = initialCurrencies.find(c => c.code === 'USD') || initialCurrencies.find(c => c.default) || initialCurrencies[0];
+                if (defaultCurr) {
+                    setSelectedCurrency(defaultCurr.code);
+                    setSelectedCurrencyId(defaultCurr.id);
+                    localStorage.setItem('node_mania_currency', defaultCurr.code);
+                    localStorage.setItem('node_mania_currency_id', defaultCurr.id.toString());
+                }
+            };
+            fetchGeoCurrency();
         }
     }, [initialCurrencies]);
 
@@ -52,11 +90,49 @@ export function CurrencyProvider({
                 try {
                     const response = await fetch('/api/whmcs/currencies');
                     const data = await response.json();
-                    if (data.success) {
+                    if (data.success && data.currencies.length > 0) {
                         setCurrencies(data.currencies);
-                        if (!localStorage.getItem('node_mania_currency')) {
-                            const defaultCurr = data.currencies.find((c: WhmcsCurrency) => c.default) || data.currencies[0];
-                            if (defaultCurr) setSelectedCurrency(defaultCurr.code); setSelectedCurrencyId(defaultCurr.id);
+                        
+                        let currencyParam = '';
+                        if (typeof window !== 'undefined') {
+                            const params = new URLSearchParams(window.location.search);
+                            currencyParam = params.get('currency')?.toUpperCase() || '';
+                        }
+                        
+                        const urlCurr = currencyParam ? data.currencies.find((c: WhmcsCurrency) => c.code.toUpperCase() === currencyParam) : null;
+                        
+                        if (urlCurr) {
+                            setSelectedCurrency(urlCurr.code);
+                            setSelectedCurrencyId(urlCurr.id);
+                            localStorage.setItem('node_mania_currency', urlCurr.code);
+                            localStorage.setItem('node_mania_currency_id', urlCurr.id.toString());
+                        } else if (!localStorage.getItem('node_mania_currency')) {
+                            // Try Geo
+                            try {
+                                const req = await fetch('https://ipapi.co/currency/');
+                                if (req.ok) {
+                                    const geoCurrency = (await req.text()).trim().toUpperCase();
+                                    const geoCurrObj = data.currencies.find((c: WhmcsCurrency) => c.code.toUpperCase() === geoCurrency);
+                                    if (geoCurrObj) {
+                                        setSelectedCurrency(geoCurrObj.code);
+                                        setSelectedCurrencyId(geoCurrObj.id);
+                                        localStorage.setItem('node_mania_currency', geoCurrObj.code);
+                                        localStorage.setItem('node_mania_currency_id', geoCurrObj.id.toString());
+                                        return;
+                                    }
+                                }
+                            } catch (e) {
+                                console.error('Failed geo currency:', e);
+                            }
+                            
+                            // Fallback USD -> default -> first
+                            const defaultCurr = data.currencies.find((c: WhmcsCurrency) => c.code === 'USD') || data.currencies.find((c: WhmcsCurrency) => c.default) || data.currencies[0];
+                            if (defaultCurr) {
+                                setSelectedCurrency(defaultCurr.code);
+                                setSelectedCurrencyId(defaultCurr.id);
+                                localStorage.setItem('node_mania_currency', defaultCurr.code);
+                                localStorage.setItem('node_mania_currency_id', defaultCurr.id.toString());
+                            }
                         }
                     }
                 } catch (error) {
