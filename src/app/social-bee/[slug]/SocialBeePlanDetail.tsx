@@ -8,6 +8,8 @@ import { Check, ArrowRight, Signal } from 'lucide-react';
 import { OrderButton } from '@/components/ui/OrderButton';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
+import Link from 'next/link';
+import { public_routes } from '@/lib/constants/routes';
 
 interface SocialBeePlanDetailProps {
     product: CleanProduct;
@@ -72,12 +74,12 @@ export default function SocialBeePlanDetail({ product, pid }: SocialBeePlanDetai
                                 Buy {product.name} Now
                                 <ArrowRight className="w-5 h-5" />
                             </OrderButton>
-                            <a
-                                href="/web-security/social-bee"
+                            <Link
+                                href={public_routes.SocialBee}
                                 className="px-10 py-4 bg-white border border-slate-200 text-slate-900 rounded-xl font-bold transition-all hover:-translate-y-1"
                             >
                                 Back to All Plans
-                            </a>
+                            </Link>
                         </div>
                     </div>
 

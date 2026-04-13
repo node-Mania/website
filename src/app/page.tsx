@@ -9,10 +9,10 @@ import type { ProductGroup } from "@/lib/types/whmcs.types";
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'High-Performance Cloud Hosting & Domains | nodeMaina',
+  title: 'High-Performance Cloud Hosting & Domains | nodeMania',
   description: 'Affordable high-performance cloud hosting, WordPress hosting, and domain registrations at nodeMania. Enjoy 99.9% uptime, LiteSpeed servers, and 24/7 expert support.',
   openGraph: {
-    title: 'High-Performance Cloud Hosting & Domains | nodeMaina',
+    title: 'High-Performance Cloud Hosting & Domains | nodeMania',
     description: 'Affordable high-performance cloud hosting, WordPress hosting, and domain registrations at nodeMania. Enjoy 99.9% uptime, LiteSpeed servers, and 24/7 expert support.',
     type: 'website',
   },
