@@ -2,7 +2,6 @@
 
 import { useCurrency } from '@/context/CurrencyContext';
 import { resolvePricing } from '@/lib/utils/pricing';
-import { resolveProductUrl, cn } from '@/lib/utils';
 import { CleanProduct } from '@/lib/types/whmcs.types';
 import { Check, ArrowRight, Signal } from 'lucide-react';
 import { OrderButton } from '@/components/ui/OrderButton';
