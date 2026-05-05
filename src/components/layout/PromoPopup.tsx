@@ -5,15 +5,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, Headphones, Gift, Sparkles, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 
-declare global {
-    interface Window {
-        Tawk_API?: {
-            maximize: () => void;
-            hideWidget: () => void;
-            showWidget: () => void;
-        };
-    }
-}
 
 const PromoPopup = () => {
     const [isVisible, setIsVisible] = useState(false);
