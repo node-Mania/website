@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import TawkTo from "@/components/TawkTo";
+import PromoPopup from "@/components/layout/PromoPopup";
 import Analytics from "@/components/analytics/Analytics";
 import { CurrencyProvider } from "@/context/CurrencyContext";
 import { getCurrencies } from "@/lib/services/whmcs.service";
@@ -45,6 +46,7 @@ export default async function RootLayout({
           {children}
         </CurrencyProvider>
         <TawkTo />
+        <PromoPopup />
       </body>
     </html>
   );
